@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover">
 <meta name="theme-color" content="#5a8b78">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -10,16 +10,16 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="مِرْقاة">
 <meta name="description" content="مِرْقاة — تطبيق عربي لتنظيم المهام اليومية ومتابعة الإنجاز.">
-<title>مِرْقاة — نظّم إنجازك</title>
+<title>مِرْقاة</title>
 
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
-<link rel="apple-touch-icon" href="./icon.svg">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -435,7 +435,6 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
         <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">إنشاء حساب</button>
       </div>
       <form class="auth-form" id="auth-form" novalidate>
-        <!-- البريد الإلكتروني أصبح اسم مستخدم -->
         <input type="text" class="auth-input" id="auth-username" placeholder="اسم المستخدم" autocomplete="username">
         <input type="password" class="auth-input" id="auth-password" placeholder="كلمة المرور" autocomplete="current-password">
         <input type="text" class="auth-input" id="auth-displayname" placeholder="اسمك الظاهر (اختياري)" style="display:none">
@@ -496,7 +495,6 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
         <button class="install-banner-btn" type="button">تثبيت</button>
       </div>
 
-      <!-- آية / حديث اليوم -->
       <div class="daily-verse-card" id="daily-verse-card">
         <div class="daily-verse-text" id="daily-verse-text">—</div>
         <div class="daily-verse-source" id="daily-verse-source">—</div>
@@ -517,7 +515,6 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
     </nav>
   </div>
 
-  <!-- شاشة المسبحة -->
   <div class="screen" id="tasbih-screen">
     <div class="header">
       <button class="header-btn" onclick="goHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
@@ -555,11 +552,6 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
       <button class="header-btn" onclick="openSectionModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
     </div>
     <div class="content">
-      <!-- زر المهام الإيمانية السريعة (يظهر فقط في القسم الديني) -->
-      <button class="add-prominent-btn" id="quick-islamic-btn" style="display:none; border-color:var(--accent); color:var(--accent); background:var(--accent-soft); margin-bottom:8px;" onclick="openQuickIslamicTasksModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        إضافة مهام إيمانية سريعة
-      </button>
       <button class="add-prominent-btn" onclick="openSectionModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         إضافة صنف جديد
@@ -611,7 +603,6 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
 
   <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
 
-  <!-- نافذة ملاحظات اليوم -->
   <div class="modal" id="day-note-modal">
     <div class="modal-handle"></div>
     <div class="modal-header">
@@ -775,7 +766,6 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
     </div>
   </div>
 
-  <!-- نافذة بومودورو -->
   <div class="modal" id="pomodoro-modal" style="z-index: 110;">
     <div class="modal-handle"></div>
     <div class="modal-header">
@@ -792,49 +782,6 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
     </div>
   </div>
 
-  <!-- نافذة المهام الإيمانية السريعة -->
-  <div class="modal" id="quick-islamic-modal" style="z-index: 110;">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <h2>مهام إيمانية سريعة</h2>
-      <button class="modal-close" onclick="closeQuickIslamicModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">اختر المهام التي تريد إضافتها بضغطة واحدة إلى قسم "الصلاة" أو "مهام عامة":</p>
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <label style="display:flex; align-items:center; gap:10px; background:var(--surface-soft); padding:12px; border-radius:10px; cursor:pointer;">
-          <input type="checkbox" id="qi-duha" value="صلاة الضحى" style="width:18px; height:18px;">
-          <span style="font-weight:600; font-size:14px;">صلاة الضحى (كل يوم)</span>
-        </label>
-        <label style="display:flex; align-items:center; gap:10px; background:var(--surface-soft); padding:12px; border-radius:10px; cursor:pointer;">
-          <input type="checkbox" id="qi-witr" value="صلاة الوتر" style="width:18px; height:18px;">
-          <span style="font-weight:600; font-size:14px;">صلاة الوتر (كل يوم)</span>
-        </label>
-        <label style="display:flex; align-items:center; gap:10px; background:var(--surface-soft); padding:12px; border-radius:10px; cursor:pointer;">
-          <input type="checkbox" id="qi-qiyam" value="قيام الليل" style="width:18px; height:18px;">
-          <span style="font-weight:600; font-size:14px;">قيام الليل (كل يوم)</span>
-        </label>
-        <label style="display:flex; align-items:center; gap:10px; background:var(--surface-soft); padding:12px; border-radius:10px; cursor:pointer;">
-          <input type="checkbox" id="qi-morning" value="أذكار الصباح" style="width:18px; height:18px;">
-          <span style="font-weight:600; font-size:14px;">أذكار الصباح (كل يوم)</span>
-        </label>
-        <label style="display:flex; align-items:center; gap:10px; background:var(--surface-soft); padding:12px; border-radius:10px; cursor:pointer;">
-          <input type="checkbox" id="qi-evening" value="أذكار المساء" style="width:18px; height:18px;">
-          <span style="font-weight:600; font-size:14px;">أذكار المساء (كل يوم)</span>
-        </label>
-        <label style="display:flex; align-items:center; gap:10px; background:var(--surface-soft); padding:12px; border-radius:10px; cursor:pointer;">
-          <input type="checkbox" id="qi-quran" value="قراءة القرآن" style="width:18px; height:18px;">
-          <span style="font-weight:600; font-size:14px;">قراءة القرآن (كل يوم)</span>
-        </label>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-cancel" onclick="closeQuickIslamicModal()">إلغاء</button>
-      <button class="btn btn-save" onclick="addQuickIslamicTasks()">إضافة المحدد</button>
-    </div>
-  </div>
-
-  <!-- نافذة الأوسمة -->
   <div class="modal" id="badges-modal" style="z-index: 110;">
     <div class="modal-handle"></div>
     <div class="modal-header">
@@ -889,7 +836,8 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
 
 <script>
 // ==========================================
-// 0. FIREBASE CONFIG (تم وضع بياناتك هنا)
+// 0. FIREBASE CONFIG
+// Security note: enforce per-user Firestore Security Rules in the Firebase console; client code cannot provide that protection by itself.
 // ==========================================
 var firebaseConfig = {
   apiKey: "AIzaSyAAfQ-rbWNE0rConbhClrZBIq9xL0EpcnQ",
@@ -902,40 +850,327 @@ var firebaseConfig = {
 
 var CLOUD_ENABLED = false;
 try {
-  if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE_") !== 0 && typeof firebase !== 'undefined') {
-    firebase.initializeApp(firebaseConfig);
-    CLOUD_ENABLED = true;
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE_") !== 0 &&
+      typeof firebase !== 'undefined' && typeof firebase.initializeApp === 'function' &&
+      typeof firebase.auth === 'function' && typeof firebase.firestore === 'function') {
+    if (!firebase.apps || firebase.apps.length === 0) firebase.initializeApp(firebaseConfig);
+    CLOUD_ENABLED = !!(firebase.auth && firebase.firestore);
   }
-} catch (e) { console.warn("Firebase init skipped", e); }
+} catch (e) { CLOUD_ENABLED = false; console.warn("Firebase unavailable; local mode will be used.", e); }
 
 // ==========================================
 // 1. STORAGE & THEME
 // ==========================================
-var memoryStorage = {};
+// Local persistence layer: localStorage is authoritative when writes succeed; IndexedDB is a
+// durable fallback for keys rejected by quota/policy. The cache keeps the synchronous app API.
+var storageCache = Object.create(null);
+var storageDB = null;
+var storageFailureNotified = false;
+var storageLocalFailures = new Set();
+var STORAGE_DB_NAME = 'mirqat-persistent-storage-v1';
+var STORAGE_DB_STORE = 'keyValue';
+
+function reportStorageFailure() {
+  console.error('مِرْقاة: تعذر حفظ البيانات محلياً في localStorage وIndexedDB.');
+  if (storageFailureNotified) return;
+  storageFailureNotified = true;
+  setTimeout(function() {
+    if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+      window.alert('تنبيه: تعذّر حفظ البيانات على هذا الجهاز. صدّر نسخة احتياطية من الإعدادات قبل إغلاق التطبيق.');
+    }
+  }, 0);
+}
+function persistStorageRecord(key, value, remove, useFallback) {
+  if (!storageDB) return false;
+  key = String(key);
+  try {
+    // Prefer strict durability where the browser supports transaction options.
+    var tx;
+    try { tx = storageDB.transaction([STORAGE_DB_STORE], 'readwrite', { durability: 'strict' }); }
+    catch (optionError) { tx = storageDB.transaction([STORAGE_DB_STORE], 'readwrite'); }
+    var store = tx.objectStore(STORAGE_DB_STORE);
+    // Tombstones prevent removed values from being resurrected by a stale backup.
+    if (remove) store.put({ key: key, value: '', deleted: true, fallback: false, updatedAt: Date.now() });
+    else store.put({ key: key, value: String(value), deleted: false, fallback: !!useFallback, updatedAt: Date.now() });
+    tx.onerror = function() { if (storageLocalFailures.has(key)) reportStorageFailure(); else console.warn('IndexedDB backup write failed; localStorage remains available.'); };
+    tx.onabort = function() { if (storageLocalFailures.has(key)) reportStorageFailure(); else console.warn('IndexedDB backup write aborted; localStorage remains available.'); };
+    return true;
+  } catch (e) {
+    console.warn('IndexedDB write failed', e);
+    if (useFallback || storageLocalFailures.has(key)) reportStorageFailure();
+    return false;
+  }
+}
 var SafeStorage = {
-  getItem: function(k) { try { return localStorage.getItem(k); } catch (e) { return memoryStorage[k] || null; } },
-  setItem: function(k, v) { try { localStorage.setItem(k, v); } catch (e) { memoryStorage[k] = v; } },
-  removeItem: function(k) { try { localStorage.removeItem(k); } catch (e) { delete memoryStorage[k]; } }
+  getItem: function(k) {
+    k = String(k);
+    if (Object.prototype.hasOwnProperty.call(storageCache, k)) return storageCache[k];
+    try {
+      var value = localStorage.getItem(k);
+      if (value !== null) storageCache[k] = value;
+      return value;
+    } catch (e) { return null; }
+  },
+  setItem: function(k, v) {
+    k = String(k); v = String(v);
+    storageCache[k] = v;
+    var localSaved = false;
+    try { localStorage.setItem(k, v); localSaved = true; storageLocalFailures.delete(k); } catch (e) { storageLocalFailures.add(k); console.warn('localStorage write failed; using IndexedDB fallback.', e); }
+    var dbSaved = persistStorageRecord(k, v, false, !localSaved);
+    if (!localSaved && !dbSaved) reportStorageFailure();
+  },
+  removeItem: function(k) {
+    k = String(k);
+    delete storageCache[k];
+    try { localStorage.removeItem(k); } catch (e) {}
+    persistStorageRecord(k, null, true, false);
+  }
 };
 
+function legacyTaskBackupHasMore(key, localValue, backupValue) {
+  // Migration aid for the previous release, which mirrored every value into IndexedDB
+  // without marking whether localStorage had failed. If the old backup has more tasks,
+  // preserve that larger array instead of restoring the truncated localStorage copy.
+  if (!/_tasks$/.test(String(key)) || typeof localValue !== 'string' || typeof backupValue !== 'string') return false;
+  try {
+    var localTasks = JSON.parse(localValue);
+    var backupTasks = JSON.parse(backupValue);
+    return Array.isArray(localTasks) && Array.isArray(backupTasks) && backupTasks.length > localTasks.length;
+  } catch (e) { return false; }
+}
+
+function initializePersistentStorage() {
+  // Old versions stored all data in localStorage. Import it into IndexedDB on first run,
+  // then make the IndexedDB copy authoritative so quota failures cannot silently roll back data.
+  if (!window.indexedDB) {
+    try {
+      for (var li = 0; li < localStorage.length; li++) {
+        var lk = localStorage.key(li);
+        if (lk !== null && !Object.prototype.hasOwnProperty.call(storageCache, lk)) storageCache[lk] = localStorage.getItem(lk);
+      }
+    } catch (e) {}
+    return Promise.resolve(false);
+  }
+  return new Promise(function(resolve, reject) {
+    var request;
+    try { request = indexedDB.open(STORAGE_DB_NAME, 1); }
+    catch (e) { reject(e); return; }
+    request.onupgradeneeded = function() {
+      var db = request.result;
+      if (!db.objectStoreNames.contains(STORAGE_DB_STORE)) db.createObjectStore(STORAGE_DB_STORE, { keyPath: 'key' });
+    };
+    request.onerror = function() { reject(request.error || new Error('IndexedDB open failed')); };
+    request.onsuccess = function() { resolve(request.result); };
+  }).then(function(db) {
+    storageDB = db;
+    return new Promise(function(resolve, reject) {
+      var tx = db.transaction([STORAGE_DB_STORE], 'readonly');
+      var req = tx.objectStore(STORAGE_DB_STORE).getAll();
+      req.onsuccess = function() { resolve(req.result || []); };
+      req.onerror = function() { reject(req.error || new Error('IndexedDB read failed')); };
+    });
+  }).then(function(records) {
+    // A localStorage mirror is authoritative when its write succeeded. Only prefer
+    // IndexedDB over localStorage for keys whose latest write failed because of quota
+    // or browser restrictions. This prevents an older IDB mirror from restoring stale data.
+    var idbByKey = Object.create(null);
+    var localKeys = new Set();
+    records.forEach(function(record) {
+      if (!record || typeof record.key !== 'string') return;
+      idbByKey[record.key] = record;
+      if (record.deleted === true) return;
+      if (typeof record.value === 'string' && record.fallback === true) {
+        storageCache[record.key] = record.value;
+        storageLocalFailures.add(record.key);
+      }
+    });
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key === null) continue;
+        var value = localStorage.getItem(key);
+        if (value === null) continue;
+        localKeys.add(key);
+        var backup = idbByKey[key];
+        if (backup && backup.deleted === true) {
+          // A currently existing local value is a new write after a prior removal.
+          storageCache[key] = value;
+          persistStorageRecord(key, value, false, false);
+        } else if (backup && backup.fallback === true) {
+          // IndexedDB is authoritative for a key whose latest localStorage write failed.
+        } else if (backup && backup.fallback === undefined && legacyTaskBackupHasMore(key, value, backup.value)) {
+          // Recover tasks saved by the older build before fallback metadata existed.
+          storageCache[key] = backup.value;
+          storageLocalFailures.add(key);
+          persistStorageRecord(key, backup.value, false, true);
+        } else {
+          storageCache[key] = value;
+          persistStorageRecord(key, value, false, false);
+        }
+      }
+    } catch (e) { console.warn('Unable to import all localStorage data', e); }
+    // Recover fallback-only records and any records preserved in IndexedDB when localStorage
+    // was cleared. Deleted tombstones are deliberately ignored.
+    records.forEach(function(record) {
+      if (!record || typeof record.key !== 'string' || record.deleted === true || typeof record.value !== 'string') return;
+      if (!localKeys.has(record.key) && !Object.prototype.hasOwnProperty.call(storageCache, record.key)) {
+        storageCache[record.key] = record.value;
+        if (record.fallback === true) storageLocalFailures.add(record.key);
+      }
+    });
+    return true;
+  }).catch(function(err) {
+    storageDB = null;
+    console.warn('Persistent IndexedDB fallback unavailable; continuing with localStorage.', err);
+    try {
+      for (var j = 0; j < localStorage.length; j++) {
+        var localKey = localStorage.key(j);
+        if (localKey !== null && !Object.prototype.hasOwnProperty.call(storageCache, localKey)) storageCache[localKey] = localStorage.getItem(localKey);
+      }
+    } catch (e) {}
+    return false;
+  });
+}
+
 var cloudUser = null;
-var cloudData = { tasks: [], categories: [], dailySnapshots: {}, dayNotes: {}, settings: {}, tasbih: 0, points: 0, badges: [], streak: 0, lastStreakDate: "", prayersAdded: false, lastOpen: "", displayName: "" };
+var cloudData = { tasks: [], tasksStorageVersion: 0, categories: [], dailySnapshots: {}, dayNotes: {}, settings: {}, tasbih: 0, points: 0, badges: [], streak: 0, lastStreakDate: "", prayersAdded: false, lastOpen: "", displayName: "" };
 var cloudSaveTimer = null;
 
+function buildCloudPayload() {
+  // Tasks live in a subcollection so growing task lists cannot push the user document
+  // over Firestore's 1 MiB document limit.
+  return {
+    categories: cloudData.categories || [],
+    dailySnapshots: cloudData.dailySnapshots || {}, dayNotes: cloudData.dayNotes || {},
+    settings: cloudData.settings || {}, tasbih: Number(cloudData.tasbih) || 0,
+    points: Number(cloudData.points) || 0, badges: cloudData.badges || [],
+    streak: Number(cloudData.streak) || 0, lastStreakDate: cloudData.lastStreakDate || "",
+    prayersAdded: !!cloudData.prayersAdded, lastOpen: cloudData.lastOpen || "",
+    defaultsInjected_v2: !!cloudData.defaultsInjected_v2,
+    tasksStorageVersion: 2,
+    displayName: cloudData.displayName || ""
+  };
+}
+var cloudTaskChunksActive = false;
+var taskChunksUnsubscribe = null;
+var CLOUD_TASK_CHUNK_MAX_CHARS = 120000; // Conservative for UTF-8 Firestore document size.
+function splitTasksIntoCloudChunks(tasks) {
+  tasks = Array.isArray(tasks) ? tasks : [];
+  var chunks = [], current = [], currentSize = 2;
+  tasks.forEach(function(task) {
+    var encoded = JSON.stringify(task);
+    var itemSize = encoded.length + 1;
+    if (itemSize > CLOUD_TASK_CHUNK_MAX_CHARS) throw new Error('إحدى المهام كبيرة جدًا للمزامنة السحابية. قلّل طول الملاحظات أو مجموعات الخيارات فيها.');
+    if (current.length && currentSize + itemSize > CLOUD_TASK_CHUNK_MAX_CHARS) {
+      chunks.push(current); current = []; currentSize = 2;
+    }
+    current.push(task); currentSize += itemSize;
+  });
+  if (current.length) chunks.push(current);
+  return chunks;
+}
+function writeCloudTasks(uidToSave, tasks) {
+  if (!CLOUD_ENABLED || !uidToSave) return Promise.resolve();
+  var chunks;
+  try { chunks = splitTasksIntoCloudChunks(tasks); }
+  catch (e) { return Promise.reject(e); }
+  var db = firebase.firestore();
+  var col = db.collection('users').doc(uidToSave).collection('taskChunks');
+  return col.get().then(function(snapshot) {
+    var existing = {};
+    snapshot.forEach(function(doc) { existing[doc.id] = doc; });
+    var batch = db.batch();
+    var operationCount = 0;
+    chunks.forEach(function(items, index) {
+      var id = 'chunk_' + String(index).padStart(5, '0');
+      delete existing[id];
+      batch.set(col.doc(id), { index: index, items: items, updatedAt: Date.now(), schemaVersion: 1 });
+      operationCount++;
+    });
+    Object.keys(existing).forEach(function(id) { batch.delete(col.doc(id)); operationCount++; });
+    // Keep the whole chunk update atomic so a realtime listener cannot observe a partial list.
+    if (operationCount > 450) throw new Error('عدد أجزاء المهام كبير جدًا للمزامنة دفعة واحدة. صدّر نسخة احتياطية وتواصل مع الدعم قبل متابعة المزامنة السحابية.');
+    return batch.commit().then(function() { cloudTaskChunksActive = true; });
+  });
+}
+function loadCloudTasks(uidToLoad, legacyTasks, storageVersion) {
+  if (!CLOUD_ENABLED || !uidToLoad) return Promise.resolve({ tasks: Array.isArray(legacyTasks) ? legacyTasks : [], hasChunks: false });
+  var col = firebase.firestore().collection('users').doc(uidToLoad).collection('taskChunks');
+  return col.get().then(function(snapshot) {
+    var docs = [];
+    snapshot.forEach(function(doc) { docs.push({ id: doc.id, data: doc.data() || {} }); });
+    docs.sort(function(a, b) { return Number(a.data.index || 0) - Number(b.data.index || 0); });
+    if (docs.length) {
+      var all = [];
+      docs.forEach(function(doc) { if (Array.isArray(doc.data.items)) all = all.concat(doc.data.items); });
+      return { tasks: all, hasChunks: true };
+    }
+    if (Number(storageVersion) >= 2) return { tasks: [], hasChunks: true };
+    return { tasks: Array.isArray(legacyTasks) ? legacyTasks : [], hasChunks: false };
+  });
+}
+function writeCloudData(uidToSave) {
+  if (!CLOUD_ENABLED || !uidToSave) return Promise.resolve();
+  var db = firebase.firestore();
+  // Write the task chunks first. Then remove the legacy tasks array from the parent document.
+  return writeCloudTasks(uidToSave, cloudData.tasks || []).then(function() {
+    var payload = buildCloudPayload();
+    payload.tasks = firebase.firestore.FieldValue.delete();
+    return db.collection('users').doc(uidToSave).set(payload, { merge: true });
+  });
+}
+var cloudSaveErrorShown = false;
 function scheduleCloudSave() {
   if (!CLOUD_ENABLED || !cloudUser) return;
   if (cloudSaveTimer) clearTimeout(cloudSaveTimer);
+  var scheduledUid = cloudUser.uid;
   cloudSaveTimer = setTimeout(function() {
-    firebase.firestore().collection('users').doc(cloudUser.uid).set({
-      tasks: cloudData.tasks, categories: cloudData.categories,
-      dailySnapshots: cloudData.dailySnapshots, dayNotes: cloudData.dayNotes,
-      settings: cloudData.settings, tasbih: cloudData.tasbih,
-      points: cloudData.points, badges: cloudData.badges,
-      streak: cloudData.streak, lastStreakDate: cloudData.lastStreakDate,
-      prayersAdded: cloudData.prayersAdded, lastOpen: cloudData.lastOpen,
-      displayName: cloudData.displayName || ''
-    }, { merge: true }).catch(function(e){ console.warn("Cloud save failed", e); });
-  }, 700);
+    cloudSaveTimer = null;
+    if (!cloudUser || cloudUser.uid !== scheduledUid) return;
+    writeCloudData(scheduledUid).then(function() {
+      cloudSaveErrorShown = false;
+    }).catch(function(e) {
+      console.error("Cloud save failed", e);
+      if (!cloudSaveErrorShown) {
+        cloudSaveErrorShown = true;
+        alert("لم يتم حفظ التغييرات في الحساب السحابي. بقيت التغييرات ظاهرة مؤقتًا فقط؛ تحقّق من الإنترنت ثم حاول مجددًا. التفاصيل: " + (e && e.message ? e.message : "خطأ غير معروف"));
+      }
+    });
+  }, 500);
+}
+var cloudUnsubscribe = null;
+function stopCloudSync() {
+  if (cloudUnsubscribe) {
+    try { cloudUnsubscribe(); } catch (e) { console.warn("Unable to stop cloud listener", e); }
+    cloudUnsubscribe = null;
+  }
+  if (taskChunksUnsubscribe) {
+    try { taskChunksUnsubscribe(); } catch (e) { console.warn("Unable to stop task listener", e); }
+    taskChunksUnsubscribe = null;
+  }
+  if (cloudSaveTimer) { clearTimeout(cloudSaveTimer); cloudSaveTimer = null; }
+}
+
+
+function hydrateCloudData(d, displayNameFallback, tasksFallback) {
+  d = isPlainObject(d) ? d : {};
+  return {
+    tasks: Array.isArray(d.tasks) ? d.tasks : (Array.isArray(tasksFallback) ? tasksFallback : []),
+    tasksStorageVersion: Number(d.tasksStorageVersion) || 0,
+    categories: Array.isArray(d.categories) ? d.categories : [],
+    dailySnapshots: isPlainObject(d.dailySnapshots) ? d.dailySnapshots : {},
+    dayNotes: isPlainObject(d.dayNotes) ? d.dayNotes : {},
+    settings: isPlainObject(d.settings) ? d.settings : {},
+    tasbih: Number.isFinite(Number(d.tasbih)) ? Number(d.tasbih) : 0,
+    points: Number.isFinite(Number(d.points)) ? Number(d.points) : 0,
+    badges: Array.isArray(d.badges) ? d.badges : [],
+    streak: Number.isFinite(Number(d.streak)) ? Number(d.streak) : 0,
+    lastStreakDate: typeof d.lastStreakDate === "string" ? d.lastStreakDate : "",
+    prayersAdded: !!d.prayersAdded,
+    lastOpen: typeof d.lastOpen === "string" ? d.lastOpen : "",
+    defaultsInjected_v2: !!d.defaultsInjected_v2,
+    displayName: typeof d.displayName === "string" && d.displayName ? d.displayName : (displayNameFallback || "")
+  };
 }
 
 function loadUserData(key, fallback) {
@@ -996,12 +1231,27 @@ function escapeHTML(s) {
 }
 function getDateStr(d) { return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
 function getTodayStr() { return getDateStr(new Date()); }
+function normalizeDateKey(value) {
+  if (!value) return "";
+  if (value instanceof Date) return isNaN(value.getTime()) ? "" : getDateStr(value);
+  var str = String(value).trim();
+  var localParts = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(str);
+  if (localParts) {
+    var localDate = new Date(Number(localParts[1]), Number(localParts[2]) - 1, Number(localParts[3]));
+    if (localDate.getFullYear() !== Number(localParts[1]) || localDate.getMonth() !== Number(localParts[2]) - 1 || localDate.getDate() !== Number(localParts[3])) return "";
+    return getDateStr(localDate);
+  }
+  var d = new Date(str);
+  return isNaN(d.getTime()) ? "" : getDateStr(d);
+}
+function isPlainObject(value) {
+  return !!value && typeof value === "object" && !Array.isArray(value) && (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
+}
 function uid(prefix) { return (prefix||"id_") + Date.now() + "_" + Math.floor(Math.random()*10000); }
 
 var DHIKR_LIST = ["سبحان الله", "الحمد لله", "لا إله إلا الله", "الله أكبر", "أستغفر الله", "لا حول ولا قوة إلا بالله"];
 function getRandomDhikr() { return DHIKR_LIST[Math.floor(Math.random() * DHIKR_LIST.length)]; }
 
-// آية / حديث اليوم
 var DAILY_VERSES = [
   { text: "﴿وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ﴾", source: "سورة النجم" },
   { text: "«إن الله يحب إذا عمل أحدكم عملاً أن يتقنه»", source: "رواه الطبراني" },
@@ -1054,7 +1304,7 @@ function applyTheme() {
 }
 
 // ==========================================
-// 3. GAMIFICATION (النقاط والأوسمة)
+// 3. GAMIFICATION
 // ==========================================
 var BADGES_DEF = [
   { id: "start", title: "البداية", icon: "🌱", desc: "أول مهمة منجزة", condition: function(pts, streak, tasksDone) { return tasksDone >= 1; } },
@@ -1109,7 +1359,7 @@ function updatePointsUI() {
 }
 
 // ==========================================
-// 4. AUTH (اسم مستخدم وكلمة مرور فقط)
+// 4. AUTH
 // ==========================================
 function simpleHash(str) { var h=5381; for (var i=0;i<str.length;i++){h=((h<<5)+h)+str.charCodeAt(i);h=h&h;} return "h"+Math.abs(h); }
 function getUsers() { try { return JSON.parse(SafeStorage.getItem("mrq_users")||"{}"); } catch(e){ return {}; } }
@@ -1152,14 +1402,15 @@ function handleAuth(ev) {
     if (authMode === "signup") {
       firebase.auth().createUserWithEmailAndPassword(fakeEmail, password)
         .then(function(cred) {
-          var u = cred.user; cloudUser = u;
+          var u = cred.user;
           var name = displayName || username;
           var wasGuest = SafeStorage.getItem("mrq_currentUser");
           var backup = null;
           if (wasGuest && isGuestUser(wasGuest)) {
-            backup = { tasks: loadUserData("tasks", null), categories: loadUserData("categories", null), dailySnapshots: loadUserData("dailySnapshots", null), dayNotes: loadUserData("dayNotes", null), settings: loadUserData("settings", null), tasbih: loadUserData("tasbih", 0), points: loadUserData("points", 0), badges: loadUserData("badges", []), streak: loadUserData("streak", 0), lastStreakDate: loadUserData("lastStreakDate", "") };
+            backup = { tasks: loadUserData("tasks", null), categories: loadUserData("categories", null), dailySnapshots: loadUserData("dailySnapshots", null), dayNotes: loadUserData("dayNotes", null), settings: loadUserData("settings", null), tasbih: loadUserData("tasbih", 0), points: loadUserData("points", 0), badges: loadUserData("badges", []), streak: loadUserData("streak", 0), lastStreakDate: loadUserData("lastStreakDate", ""), lastOpen: getUserMeta("lastOpen"), defaultsInjected_v2: loadUserData("defaultsInjected_v2", false) };
           }
-          cloudData = { tasks: [], categories: [], dailySnapshots: {}, dayNotes: {}, settings: {}, tasbih: 0, points: 0, badges: [], streak: 0, lastStreakDate: "", prayersAdded: false, displayName: name };
+          cloudUser = u; // Fixed: Prevent data loss by reading backup first
+          cloudData = hydrateCloudData({ displayName: name }, name);
           if (backup && backup.tasks) {
             cloudData.tasks = backup.tasks; cloudData.categories = backup.categories || [];
             cloudData.dailySnapshots = backup.dailySnapshots || {}; cloudData.dayNotes = backup.dayNotes || {};
@@ -1167,18 +1418,23 @@ function handleAuth(ev) {
             cloudData.points = backup.points || 0; cloudData.badges = backup.badges || [];
             cloudData.streak = backup.streak || 0; cloudData.lastStreakDate = backup.lastStreakDate || "";
             cloudData.prayersAdded = true;
+            cloudData.lastOpen = backup.lastOpen || "";
+            cloudData.defaultsInjected_v2 = !!backup.defaultsInjected_v2;
           }
-          return firebase.firestore().collection('users').doc(u.uid).set({
-            displayName: name, email: fakeEmail,
-            tasks: cloudData.tasks, categories: cloudData.categories,
-            dailySnapshots: cloudData.dailySnapshots, dayNotes: cloudData.dayNotes,
-            settings: cloudData.settings, tasbih: cloudData.tasbih,
-            points: cloudData.points, badges: cloudData.badges,
-            streak: cloudData.streak, lastStreakDate: cloudData.lastStreakDate,
-            prayersAdded: cloudData.prayersAdded, createdAt: Date.now()
+          return writeCloudTasks(u.uid, cloudData.tasks || []).then(function() {
+            return firebase.firestore().collection('users').doc(u.uid).set({
+              displayName: name, email: fakeEmail,
+              categories: cloudData.categories,
+              dailySnapshots: cloudData.dailySnapshots, dayNotes: cloudData.dayNotes,
+              settings: cloudData.settings, tasbih: cloudData.tasbih,
+              points: cloudData.points, badges: cloudData.badges,
+              streak: cloudData.streak, lastStreakDate: cloudData.lastStreakDate,
+              prayersAdded: cloudData.prayersAdded, lastOpen: cloudData.lastOpen || "", defaultsInjected_v2: !!cloudData.defaultsInjected_v2,
+              tasksStorageVersion: 2, createdAt: Date.now()
+            });
           });
         })
-        .then(function(){ btn.disabled = false; enterApp(); })
+        .then(function(){ btn.disabled = false; })
         .catch(function(err) {
           btn.disabled = false;
           var m = "تعذّر إنشاء الحساب";
@@ -1190,11 +1446,13 @@ function handleAuth(ev) {
       firebase.auth().signInWithEmailAndPassword(fakeEmail, password)
         .then(function(cred) { cloudUser = cred.user; return firebase.firestore().collection('users').doc(cred.user.uid).get(); })
         .then(function(doc) {
-          if (doc && doc.exists) {
-            var d = doc.data();
-            cloudData = { tasks: d.tasks || [], categories: d.categories || [], dailySnapshots: d.dailySnapshots || {}, dayNotes: d.dayNotes || {}, settings: d.settings || {}, tasbih: d.tasbih || 0, points: d.points || 0, badges: d.badges || [], streak: d.streak || 0, lastStreakDate: d.lastStreakDate || "", prayersAdded: d.prayersAdded || false, displayName: d.displayName || '' };
-          }
-          btn.disabled = false; enterApp();
+          var d = doc && doc.exists ? doc.data() : {};
+          return loadCloudTasks(cloudUser.uid, d.tasks, d.tasksStorageVersion).then(function(taskResult) {
+            cloudTaskChunksActive = taskResult.hasChunks;
+            cloudData = hydrateCloudData(d, (cloudUser && cloudUser.email || "").split("@")[0], taskResult.tasks);
+            cloudData.tasks = taskResult.tasks;
+            btn.disabled = false;
+          });
         })
         .catch(function(err) {
           btn.disabled = false;
@@ -1205,12 +1463,11 @@ function handleAuth(ev) {
         });
     }
   } else {
-    // نظام محلي
     var users = getUsers();
     var prev = SafeStorage.getItem("mrq_currentUser");
     var wasGuest = isGuestUser(prev);
     var backup = null;
-    if (wasGuest && prev) backup = { tasks: loadUserData("tasks", null), categories: loadUserData("categories", null), snapshots: loadUserData("dailySnapshots", null), dayNotes: loadUserData("dayNotes", null), settings: loadUserData("settings", null), tasbih: loadUserData("tasbih", 0), points: loadUserData("points", 0), badges: loadUserData("badges", []), streak: loadUserData("streak", 0), lastStreakDate: loadUserData("lastStreakDate", "") };
+    if (wasGuest && prev) backup = { tasks: loadUserData("tasks", null), categories: loadUserData("categories", null), snapshots: loadUserData("dailySnapshots", null), dayNotes: loadUserData("dayNotes", null), settings: loadUserData("settings", null), tasbih: loadUserData("tasbih", 0), points: loadUserData("points", 0), badges: loadUserData("badges", []), streak: loadUserData("streak", 0), lastStreakDate: loadUserData("lastStreakDate", ""), lastOpen: getUserMeta("lastOpen"), defaultsInjected_v2: loadUserData("defaultsInjected_v2", false) };
     
     if (authMode === "signup") {
       if (users[username]) { showAuthError("اسم المستخدم محجوز مسبقاً"); return; }
@@ -1227,6 +1484,8 @@ function handleAuth(ev) {
         if (backup.badges !== undefined) saveUserData("badges", backup.badges);
         if (backup.streak !== undefined) saveUserData("streak", backup.streak);
         if (backup.lastStreakDate !== undefined) saveUserData("lastStreakDate", backup.lastStreakDate);
+        if (backup.lastOpen) setUserMeta("lastOpen", backup.lastOpen);
+        if (backup.defaultsInjected_v2 !== undefined) saveUserData("defaultsInjected_v2", backup.defaultsInjected_v2);
         delete users[prev]; saveUsers(users);
       }
       document.getElementById("guest-back-btn").style.display = "none";
@@ -1259,7 +1518,23 @@ function cancelGuestUpgrade() { document.getElementById("guest-back-btn").style.
 function logout() {
   if (!confirm("تسجيل الخروج؟")) return;
   if (CLOUD_ENABLED && cloudUser) {
-    firebase.auth().signOut().then(function() { cloudUser = null; cloudData = { tasks: [], categories: [], dailySnapshots: {}, dayNotes: {}, settings: {}, tasbih: 0, points: 0, badges: [], streak: 0, lastStreakDate: "", prayersAdded: false }; setCurrentUser(null); showScreen("auth"); });
+    var uidToSignOut = cloudUser.uid;
+    if (cloudUnsubscribe) { try { cloudUnsubscribe(); } catch (e) {} cloudUnsubscribe = null; }
+    if (cloudSaveTimer) { clearTimeout(cloudSaveTimer); cloudSaveTimer = null; }
+    writeCloudData(uidToSignOut).catch(function(e) { console.warn("Final cloud save failed", e); }).then(function() {
+      return firebase.auth().signOut();
+    }).then(function() {
+      cloudUser = null;
+      cloudData = hydrateCloudData({});
+      cloudTaskChunksActive = false;
+      setCurrentUser(null);
+      document.getElementById("auth-username").value = "";
+      document.getElementById("auth-password").value = "";
+      showScreen("auth");
+    }).catch(function(e) {
+      console.warn("Sign out failed", e);
+      showAuthError("تعذّر تسجيل الخروج من الحساب السحابي. تحقق من الاتصال وحاول مجدداً.");
+    });
   } else {
     setCurrentUser(null);
     document.getElementById("auth-username").value = "";
@@ -1352,7 +1627,7 @@ var editingTaskId = null;
 var formState = { freq: "once", hasQty: false, priority: "medium", days: [] };
 var formTimes = [];
 var editorGroups = [];
-var historyState = { view: "days", selectedDate: null, selectedCatId: null };
+var historyState = { view: "days", mode: 'daily', selectedDate: null, selectedCatId: null, currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear() };
 var tutStep = 0;
 var tutorialActive = false;
 var selectedPresetCat = null;
@@ -1372,19 +1647,29 @@ function init() {
   if (CLOUD_ENABLED) {
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
+        if (cloudUser && cloudUser.uid !== user.uid) stopCloudSync();
         cloudUser = user;
         firebase.firestore().collection('users').doc(user.uid).get()
           .then(function(doc) {
-            if (doc.exists) {
-              var d = doc.data();
-              cloudData = { tasks: d.tasks || [], categories: d.categories || [], dailySnapshots: d.dailySnapshots || {}, dayNotes: d.dayNotes || {}, settings: d.settings || {}, tasbih: d.tasbih || 0, points: d.points || 0, badges: d.badges || [], streak: d.streak || 0, lastStreakDate: d.lastStreakDate || "", prayersAdded: d.prayersAdded || false, displayName: d.displayName || '' };
-            }
-            applyTheme();
-            enterApp();
-            startCloudSync();
+            var raw = doc && doc.exists ? doc.data() : {};
+            return loadCloudTasks(user.uid, raw.tasks, raw.tasksStorageVersion).then(function(taskResult) {
+              cloudTaskChunksActive = taskResult.hasChunks;
+              cloudData = hydrateCloudData(raw, (user.email || "").split("@")[0], taskResult.tasks);
+              cloudData.tasks = taskResult.tasks;
+              applyTheme();
+              enterApp();
+              startCloudSync();
+              // Migrate legacy task arrays out of the parent document.
+              if (!taskResult.hasChunks && Array.isArray(raw.tasks) && raw.tasks.length) scheduleCloudSave();
+            });
           })
-          .catch(function() { showScreen("auth"); });
+          .catch(function(err) {
+            console.warn("Unable to load cloud data", err);
+            showAuthError("تعذّر تحميل بياناتك السحابية. تحقق من الاتصال وحاول مجدداً.");
+            showScreen("auth");
+          });
       } else {
+        stopCloudSync();
         cloudUser = null;
         var local = SafeStorage.getItem("mrq_currentUser");
         if (local && isGuestUser(local)) enterApp(); else showScreen("auth");
@@ -1392,32 +1677,54 @@ function init() {
     });
   } else {
     var user = SafeStorage.getItem("mrq_currentUser");
-    if (user && getUsers()[user]) enterApp(); else showScreen("auth");
+    if (user && (isGuestUser(user) || getUsers()[user])) enterApp(); else showScreen("auth");
   }
   setupNotifications();
 }
 
 function startCloudSync() {
   if (!CLOUD_ENABLED || !cloudUser) return;
-  firebase.firestore().collection('users').doc(cloudUser.uid).onSnapshot(function(doc) {
-    if (!doc.exists) return;
+  if (cloudUnsubscribe) { try { cloudUnsubscribe(); } catch (e) {} cloudUnsubscribe = null; }
+  if (taskChunksUnsubscribe) { try { taskChunksUnsubscribe(); } catch (e) {} taskChunksUnsubscribe = null; }
+  var subscribedUid = cloudUser.uid;
+  cloudUnsubscribe = firebase.firestore().collection('users').doc(subscribedUid).onSnapshot(function(doc) {
+    if (!cloudUser || cloudUser.uid !== subscribedUid || !doc.exists) return;
     if (doc.metadata && doc.metadata.hasPendingWrites) return;
     var d = doc.data();
-    cloudData.tasks = d.tasks || []; cloudData.categories = d.categories || [];
-    cloudData.dailySnapshots = d.dailySnapshots || {}; cloudData.dayNotes = d.dayNotes || {};
-    cloudData.settings = d.settings || {}; cloudData.tasbih = d.tasbih || 0;
-    cloudData.points = d.points || 0; cloudData.badges = d.badges || [];
-    cloudData.streak = d.streak || 0; cloudData.lastStreakDate = d.lastStreakDate || "";
-    cloudData.prayersAdded = d.prayersAdded || false;
+    cloudData = hydrateCloudData(d, cloudData.displayName, cloudData.tasks);
     try {
-      currentCategories = cloudData.categories; currentTasks = cloudData.tasks;
+      currentCategories = cloudData.categories;
+      currentTasks = cloudData.tasks;
       migrateToSections();
+      injectDefaultTemplates();
       if (document.getElementById("home-screen").classList.contains("active")) renderHome();
       else if (document.getElementById("sections-screen").classList.contains("active")) renderSections();
       else if (document.getElementById("tasks-screen").classList.contains("active")) renderTasks();
       else if (document.getElementById("tasbih-screen").classList.contains("active")) renderTasbih();
-    } catch(e) { console.warn(e); }
-  });
+    } catch (e) { console.warn("Unable to apply cloud update", e); }
+  }, function(err) { console.warn("Cloud sync listener failed", err); });
+
+  var chunksRef = firebase.firestore().collection('users').doc(subscribedUid).collection('taskChunks');
+  taskChunksUnsubscribe = chunksRef.onSnapshot(function(snapshot) {
+    if (!cloudUser || cloudUser.uid !== subscribedUid) return;
+    if (snapshot.metadata && snapshot.metadata.hasPendingWrites) return;
+    var docs = [];
+    snapshot.forEach(function(doc) { docs.push({ id: doc.id, data: doc.data() || {} }); });
+    if (!docs.length && !cloudTaskChunksActive && Number(cloudData.tasksStorageVersion) < 2) return; // Legacy account, not yet migrated.
+    docs.sort(function(a, b) { return Number(a.data.index || 0) - Number(b.data.index || 0); });
+    var tasks = [];
+    docs.forEach(function(doc) { if (Array.isArray(doc.data.items)) tasks = tasks.concat(doc.data.items); });
+    cloudTaskChunksActive = true;
+    cloudData.tasks = tasks;
+    cloudData.tasksStorageVersion = 2;
+    currentTasks = tasks;
+    try {
+      migrateToSections();
+      if (document.getElementById("home-screen").classList.contains("active")) renderHome();
+      else if (document.getElementById("sections-screen").classList.contains("active")) renderSections();
+      else if (document.getElementById("tasks-screen").classList.contains("active")) renderTasks();
+    } catch (e) { console.warn("Unable to apply cloud task update", e); }
+  }, function(err) { console.warn("Cloud task listener failed", err); });
 }
 
 function enterApp() {
@@ -1437,13 +1744,19 @@ function enterApp() {
 
     currentCategories = loadUserData("categories", null);
     if (!currentCategories || currentCategories.length === 0) {
-      currentCategories = JSON.parse(JSON.stringify(PRESET_CATEGORIES.slice(0, 2)));
-      currentCategories.forEach(function(c) { c.createdAt = Date.now(); c.sections = []; });
+      // Exactly the 4 categories the user requested
+      currentCategories = [
+        { id: "study", name: "دراسية", icon: "study", color: "#a36aa8", sections: [], createdAt: Date.now() },
+        { id: "religion", name: "دينية", icon: "religion", color: "#c9a227", sections: [], createdAt: Date.now() },
+        { id: "sport", name: "رياضة", icon: "sport", color: "#5a8b78", sections: [], createdAt: Date.now() },
+        { id: "sleep", name: "نوم", icon: "sleep", color: "#6a7ab8", sections: [], createdAt: Date.now() }
+      ];
       saveUserData("categories", currentCategories);
     }
+    
     currentTasks = loadUserData("tasks", []) || [];
     migrateToSections();
-    ensureDefaultPrayers();
+    injectDefaultTemplates(); // Injects the detailed structure
 
     autoSnapshot();
     resetDailyTasks();
@@ -1462,7 +1775,6 @@ function enterApp() {
     var dhikrEl = document.getElementById("home-dhikr");
     if (dhikrEl) dhikrEl.innerHTML = "<span>" + getRandomDhikr() + "</span>";
 
-    // عرض آية اليوم
     var verse = getDailyVerse();
     document.getElementById("daily-verse-text").textContent = verse.text;
     document.getElementById("daily-verse-source").textContent = verse.source;
@@ -1491,7 +1803,7 @@ function enterApp() {
 }
 
 // ==========================================
-// 8. MIGRATION + PRAYERS
+// 8. MIGRATION + DEFAULT TEMPLATES
 // ==========================================
 function migrateToSections() {
   var changed = false;
@@ -1503,28 +1815,14 @@ function migrateToSections() {
       byCat[t.cat].push(t);
     }
   });
-  var religionCat = currentCategories.filter(function(c){ return c.id === "religion"; })[0];
-  if (religionCat && byCat["religion"]) {
-    var prayerNames = ["صلاة الفجر","صلاة الظهر","صلاة العصر","صلاة المغرب","صلاة العشاء"];
-    var prayersTasks = byCat["religion"].filter(function(t){ return prayerNames.indexOf(t.title) !== -1; });
-    var otherTasks = byCat["religion"].filter(function(t){ return prayerNames.indexOf(t.title) === -1; });
-    if (prayersTasks.length > 0) {
-      var prayerSection = religionCat.sections.filter(function(s){ return s.name === "الصلاة"; })[0];
-      if (!prayerSection) { prayerSection = { id: uid("sec_"), name: "الصلاة" }; religionCat.sections.push(prayerSection); changed = true; }
-      prayersTasks.forEach(function(t){ t.section = prayerSection.id; changed = true; });
-    }
-    if (otherTasks.length > 0) {
-      var generalSec = religionCat.sections.filter(function(s){ return s.name === "مهام عامة"; })[0];
-      if (!generalSec) { generalSec = { id: uid("sec_"), name: "مهام عامة" }; religionCat.sections.push(generalSec); changed = true; }
-      otherTasks.forEach(function(t){ t.section = generalSec.id; changed = true; });
-    }
-    delete byCat["religion"];
-  }
+  
   for (var catId in byCat) {
     var cat = currentCategories.filter(function(c){ return c.id === catId; })[0];
     if (!cat) continue;
-    var sec = cat.sections.filter(function(s){ return s.name === "مهام عامة"; })[0];
-    if (!sec) { sec = { id: uid("sec_"), name: "مهام عامة" }; cat.sections.push(sec); changed = true; }
+    var secName = "مهام عامة";
+    if (cat.id === "religion") secName = "مهام عامة";
+    var sec = cat.sections.filter(function(s){ return s.name === secName; })[0];
+    if (!sec) { sec = { id: uid("sec_"), name: secName }; cat.sections.push(sec); changed = true; }
     byCat[catId].forEach(function(t){ t.section = sec.id; changed = true; });
   }
   if (changed) {
@@ -1533,40 +1831,142 @@ function migrateToSections() {
   }
 }
 
-function ensureDefaultPrayers() {
-  if (loadUserData("prayersAdded", false)) return;
-  var religionCat = currentCategories.filter(function(c){ return c.id === "religion"; })[0];
-  if (!religionCat) return;
-  var prayerSection = religionCat.sections.filter(function(s){ return s.name === "الصلاة"; })[0];
-  if (!prayerSection) {
-    prayerSection = { id: uid("sec_"), name: "الصلاة" };
-    religionCat.sections.push(prayerSection);
-    saveUserData("categories", currentCategories);
-  }
-  var now = Date.now();
-  var prayers = [
-    { title: "صلاة الفجر", options: ["في المسجد","في البيت","جماعة"], sunnah: ["صليت السنة","ما صليتها"] },
-    { title: "صلاة الظهر", options: ["في المسجد","في البيت","جماعة"], sunnah: ["صليت السنة","ما صليتها"] },
-    { title: "صلاة العصر", options: ["في المسجد","في البيت","جماعة"], sunnah: ["صليت السنة","ما صليتها"] },
-    { title: "صلاة المغرب", options: ["في المسجد","في البيت","جماعة"], sunnah: ["صليت السنة","ما صليتها"] },
-    { title: "صلاة العشاء", options: ["في المسجد","في البيت","جماعة"], sunnah: ["صليت السنة","ما صليتها"] }
-  ];
-  var existing = currentTasks.map(function(t){ return t.title; });
-  for (var i = 0; i < prayers.length; i++) {
-    if (existing.indexOf(prayers[i].title) === -1) {
-      currentTasks.push({
-        id: now + i, title: prayers[i].title, cat: "religion", section: prayerSection.id,
-        freq: "daily", times: [], notes: "", hasQty: false, target: 0, unit: "", current: 0, done: false,
-        optionGroups: [
-          { title: "أين صليت؟", options: prayers[i].options, selected: null },
-          { title: "السنة", options: prayers[i].sunnah, selected: null }
-        ],
-        completedAt: null, lastReset: getTodayStr(), createdAt: now, isDefaultPrayer: true, priority: "high"
-      });
+function injectDefaultTemplates() {
+  if (loadUserData("defaultsInjected_v2", false)) return;
+
+  var defaultData = [
+    {
+      id: "religion", name: "دينية", icon: "religion", color: "#c9a227",
+      sections: [
+        { name: "الصلاة", tasks: [
+          { title: "صلاة الفجر", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] },
+          { title: "صلاة الظهر", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] },
+          { title: "صلاة العصر", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] },
+          { title: "صلاة المغرب", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] },
+          { title: "صلاة العشاء", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] }
+        ]},
+        { name: "مهام عامة", tasks: [
+          { title: "صلاة الضحى", options: [{title: "عدد الركعات", opts: ["2", "4"]}] },
+          { title: "صلاة الوتر", options: [{title: "ركعات", opts: ["1", "3"]}] },
+          { title: "قيام الليل", options: [{title: "ركعات", opts: ["2", "4"]}] }
+        ]},
+        { name: "الأذكار", tasks: [
+          { title: "اذكار الصباح" },
+          { title: "اذكار المساء" }
+        ]},
+        { name: "قراءة القرآن", tasks: [
+          { title: "قراءة", options: [{title: "عدد الصفحات", opts: ["1", "2", "3", "4"]}] },
+          { title: "حفظ", options: [{title: "عدد الصفحات", opts: ["1", "2", "3"]}] },
+          { title: "مراجعة", options: [{title: "عدد الصفحات", opts: ["1", "2"]}] }
+        ]}
+      ]
+    },
+    {
+      id: "study", name: "دراسية", icon: "study", color: "#a36aa8",
+      sections: [
+        { name: "فيزياء", tasks: [
+          { title: "دراسة", options: [{title: "عدد الحصص", opts: ["1", "2", "3"]}] },
+          { title: "مراجعة" }
+        ]},
+        { name: "انجليزي", tasks: [
+          { title: "دراسة", options: [{title: "عدد الحصص", opts: ["1", "2", "3"]}] },
+          { title: "مراجعة" }
+        ]},
+        { name: "رياضيات", tasks: [
+          { title: "دراسة", options: [{title: "عدد الحصص", opts: ["1", "2", "3"]}] },
+          { title: "مراجعة" }
+        ]},
+        { name: "علوم ارض", tasks: [
+          { title: "دراسة", options: [{title: "عدد الدروس", opts: ["1", "2"]}] },
+          { title: "مراجعة", options: [{title: "عدد الدروس", opts: ["1", "2", "3", "4"]}] }
+        ]}
+      ]
+    },
+    {
+      id: "sport", name: "رياضة", icon: "sport", color: "#5a8b78",
+      sections: [
+        { name: "تمرين", tasks: [
+          { title: "معدة", options: [{title: "عدات", opts: ["5", "10", "15"]}] },
+          { title: "بلانك", options: [{title: "ثواني", opts: ["10", "20", "30"]}] },
+          { title: "بوش اب", options: [{title: "عدات", opts: ["3", "5", "7", "10"]}] }
+        ]},
+        { name: "القفز بالحيلة", tasks: [
+          { title: "تمرين الحبلة", options: [{title: "عدات", opts: ["100", "200", "300", "400"]}] }
+        ]}
+      ]
+    },
+    {
+      id: "sleep", name: "نوم", icon: "sleep", color: "#6a7ab8",
+      sections: [
+        { name: "الاستيقاظ", tasks: [
+          { title: "الاستيقاظ", options: [{title: "الوقت", opts: ["5", "5.30", "6"]}] }
+        ]},
+        { name: "النوم", tasks: [
+          { title: "النوم", options: [{title: "الوقت", opts: ["9", "10", "11"]}] }
+        ]}
+      ]
     }
+  ];
+
+  var changed = false;
+  var now = Date.now();
+  var idCounter = 0;
+
+  defaultData.forEach(function(catData) {
+    var cat = currentCategories.filter(function(c){ return c.id === catData.id || c.name === catData.name; })[0];
+    if (!cat) {
+      cat = { id: catData.id, name: catData.name, icon: catData.icon, color: catData.color, sections: [], createdAt: now };
+      currentCategories.push(cat);
+      changed = true;
+    }
+
+    catData.sections.forEach(function(secData) {
+      var sec = cat.sections.filter(function(s){ return s.name === secData.name; })[0];
+      if (!sec) {
+        sec = { id: uid("sec_"), name: secData.name };
+        cat.sections.push(sec);
+        changed = true;
+      }
+
+      secData.tasks.forEach(function(taskData) {
+        var existingTask = currentTasks.filter(function(t){ return t.cat === cat.id && t.section === sec.id && t.title === taskData.title; })[0];
+        if (!existingTask) {
+          var optionGroups = [];
+          if (taskData.options) {
+            taskData.options.forEach(function(opt) {
+              optionGroups.push({ title: opt.title, options: opt.opts, selected: null });
+            });
+          }
+          currentTasks.push({
+            id: now + (idCounter++),
+            title: taskData.title,
+            cat: cat.id,
+            section: sec.id,
+            freq: "daily",
+            times: [],
+            notes: "",
+            hasQty: false,
+            target: 0,
+            unit: "",
+            current: 0,
+            done: false,
+            optionGroups: optionGroups,
+            completedAt: null,
+            lastReset: getTodayStr(),
+            createdAt: now,
+            priority: "medium"
+          });
+          changed = true;
+        }
+      });
+    });
+  });
+
+  if (changed) {
+    saveUserData("categories", currentCategories);
+    saveUserData("tasks", currentTasks);
   }
-  saveUserData("tasks", currentTasks);
-  saveUserData("prayersAdded", true);
+  saveUserData("defaultsInjected_v2", true);
 }
 
 // ==========================================
@@ -1693,7 +2093,9 @@ function exportData() {
     badges: loadUserData("badges", []),
     streak: loadUserData("streak", 0),
     lastStreakDate: loadUserData("lastStreakDate", ""),
-    prayersAdded: loadUserData("prayersAdded", false)
+    prayersAdded: loadUserData("prayersAdded", false),
+    lastOpen: getUserMeta("lastOpen") || "",
+    defaultsInjected_v2: loadUserData("defaultsInjected_v2", false)
   };
   
   var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -1704,7 +2106,7 @@ function exportData() {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
   playSound("add");
 }
 
@@ -1712,82 +2114,185 @@ function importData() {
   document.getElementById("import-file").click();
 }
 
+
+function validSafeId(value) {
+  return typeof value === "string" && value.length > 0 && value.length <= 100 &&
+    /^[A-Za-z0-9_-]+$/.test(value) && ["__proto__", "prototype", "constructor"].indexOf(value) === -1;
+}
+function boundedText(value, maxLength, label, optional) {
+  if (optional && (value === undefined || value === null)) return "";
+  if (typeof value !== "string" || value.length > maxLength) throw new Error("Invalid " + label);
+  return value;
+}
+function validateBackupData(data) {
+  if (!isPlainObject(data) || !Array.isArray(data.tasks) || !Array.isArray(data.categories)) throw new Error("Invalid backup structure");
+  if (data.tasks.length > 10000 || data.categories.length > 500) throw new Error("Backup is too large");
+  var categoryIds = new Set(), sectionIds = new Set();
+  data.categories.forEach(function(cat) {
+    if (!isPlainObject(cat) || !validSafeId(cat.id) || categoryIds.has(cat.id)) throw new Error("Invalid category ID");
+    categoryIds.add(cat.id);
+    cat.name = boundedText(cat.name, 100, "category name");
+    if (!cat.name.trim()) throw new Error("Empty category name");
+    if (typeof cat.color !== "string" || !/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(cat.color)) cat.color = "#5a8b78";
+    if (typeof cat.icon !== "string" || !Object.prototype.hasOwnProperty.call(ICONS, cat.icon)) cat.icon = "personal";
+    if (!Array.isArray(cat.sections)) cat.sections = [];
+    if (cat.sections.length > 500) throw new Error("Too many sections");
+    cat.sections.forEach(function(sec) {
+      if (!isPlainObject(sec) || !validSafeId(sec.id) || sectionIds.has(sec.id)) throw new Error("Invalid section ID");
+      sectionIds.add(sec.id);
+      sec.name = boundedText(sec.name, 100, "section name");
+      if (!sec.name.trim()) throw new Error("Empty section name");
+    });
+  });
+  var taskIds = new Set();
+  data.tasks.forEach(function(t) {
+    if (!isPlainObject(t) || t.id === undefined || t.id === null || t.id === "" || !Number.isSafeInteger(Number(t.id)) || Number(t.id) < 0) throw new Error("Invalid task ID");
+    t.id = Number(t.id);
+    if (taskIds.has(t.id)) throw new Error("Duplicate task ID");
+    taskIds.add(t.id);
+    if (typeof t.cat !== "string" || !categoryIds.has(t.cat)) throw new Error("Unknown task category");
+    t.title = boundedText(t.title, 500, "task title");
+    if (!t.title.trim()) throw new Error("Empty task title");
+    if (t.section !== undefined && t.section !== null && t.section !== "" && !sectionIds.has(t.section)) throw new Error("Unknown task section");
+    if (t.section && !data.categories.some(function(cat) { return cat.id === t.cat && cat.sections.some(function(sec) { return sec.id === t.section; }); })) throw new Error("Task section/category mismatch");
+    if (["once", "daily", "weekly", "custom"].indexOf(t.freq) === -1) t.freq = "once";
+    t.notes = boundedText(t.notes, 10000, "task notes", true);
+    t.time = boundedText(t.time, 30, "task time", true);
+    if (!Array.isArray(t.times)) t.times = [];
+    if (t.times.length > 50) throw new Error("Too many reminder times");
+    t.times = t.times.map(function(tm) { return boundedText(tm, 30, "reminder time"); });
+    if (!Array.isArray(t.days)) t.days = [];
+    t.days = t.days.filter(function(day) { return Number.isInteger(Number(day)) && Number(day) >= 0 && Number(day) <= 6; }).map(Number);
+    if (!Array.isArray(t.optionGroups)) t.optionGroups = [];
+    if (t.optionGroups.length > 100) throw new Error("Too many option groups");
+    t.optionGroups = t.optionGroups.map(function(g) {
+      if (!isPlainObject(g)) throw new Error("Invalid option group");
+      var title = boundedText(g.title, 150, "group title", true);
+      if (!Array.isArray(g.options) || g.options.length > 100) throw new Error("Invalid group options");
+      var options = g.options.map(function(o) { return boundedText(o, 200, "group option"); });
+      var selected = typeof g.selected === "string" && options.indexOf(g.selected) !== -1 ? g.selected : null;
+      return { title: title, options: options, selected: selected };
+    });
+    t.hasQty = !!t.hasQty;
+    t.target = Number.isFinite(Number(t.target)) && Number(t.target) >= 0 ? Number(t.target) : 0;
+    t.current = Number.isFinite(Number(t.current)) && Number(t.current) >= 0 ? Math.min(Number(t.current), t.target || Number(t.current)) : 0;
+    t.unit = boundedText(t.unit, 50, "task unit", true);
+    t.done = !!t.done;
+    if (t.archived !== undefined) t.archived = !!t.archived;
+    t.lastRewardDate = typeof t.lastRewardDate === "string" ? t.lastRewardDate : "";
+  });
+  if (data.dailySnapshots === undefined) data.dailySnapshots = {};
+  if (!isPlainObject(data.dailySnapshots)) throw new Error("Invalid daily snapshots");
+  var snapshotKeys = Object.keys(data.dailySnapshots);
+  if (snapshotKeys.length > 5000) throw new Error("Too many snapshots");
+  snapshotKeys.forEach(function(dayKey) {
+    if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(dayKey)) throw new Error("Invalid snapshot date");
+    var snap = data.dailySnapshots[dayKey];
+    if (!isPlainObject(snap)) throw new Error("Invalid snapshot");
+    snap.date = dayKey;
+    ["totalTasks", "completedTasks", "percent"].forEach(function(k) {
+      var n = Number(snap[k]);
+      snap[k] = Number.isFinite(n) ? Math.max(0, Math.min(k === "percent" ? 100 : 100000, Math.floor(n))) : 0;
+    });
+    if (!Array.isArray(snap.categories)) snap.categories = [];
+    snap.categories = snap.categories.map(function(cat) {
+      if (!isPlainObject(cat) || !validSafeId(cat.id)) throw new Error("Invalid snapshot category");
+      cat.name = boundedText(cat.name, 100, "snapshot category name");
+      if (typeof cat.color !== "string" || !/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(cat.color)) cat.color = "#5a8b78";
+      if (typeof cat.icon !== "string" || !Object.prototype.hasOwnProperty.call(ICONS, cat.icon)) cat.icon = "personal";
+      ["total", "completed", "percent"].forEach(function(k) {
+        var n = Number(cat[k]); cat[k] = Number.isFinite(n) ? Math.max(0, Math.min(k === "percent" ? 100 : 100000, Math.floor(n))) : 0;
+      });
+      if (!Array.isArray(cat.tasks)) cat.tasks = [];
+      cat.tasks = cat.tasks.slice(0, 10000).map(function(t) {
+        if (!isPlainObject(t)) throw new Error("Invalid snapshot task");
+        var groups = Array.isArray(t.groups) ? t.groups.slice(0, 100).map(function(g) {
+          if (!isPlainObject(g)) throw new Error("Invalid snapshot group");
+          return { title: boundedText(g.title, 150, "snapshot group title", true), selected: boundedText(g.selected, 200, "snapshot group selection", true) };
+        }) : [];
+        return { title: boundedText(t.title, 500, "snapshot task title"), groups: groups, target: t.target == null ? null : Math.max(0, Number(t.target) || 0), unit: boundedText(t.unit, 50, "snapshot unit", true), completedAt: Number.isFinite(Number(t.completedAt)) ? Number(t.completedAt) : null };
+      });
+      return cat;
+    });
+  });
+  if (data.dayNotes === undefined) data.dayNotes = {};
+  if (!isPlainObject(data.dayNotes) || Object.keys(data.dayNotes).length > 5000) throw new Error("Invalid day notes");
+  Object.keys(data.dayNotes).forEach(function(k) {
+    if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(k)) throw new Error("Invalid note date");
+    data.dayNotes[k] = boundedText(data.dayNotes[k], 20000, "day note");
+  });
+  if (data.settings === undefined) data.settings = {};
+  if (!isPlainObject(data.settings)) throw new Error("Invalid settings");
+  ["sounds", "vibrate", "darkMode", "tutorialDone"].forEach(function(k) { if (data.settings[k] !== undefined) data.settings[k] = !!data.settings[k]; });
+  ["tasbih", "points", "streak"].forEach(function(k) {
+    var n = Number(data[k] || 0);
+    data[k] = Number.isFinite(n) ? Math.max(0, Math.min(100000000, Math.floor(n))) : 0;
+  });
+  if (!Array.isArray(data.badges)) data.badges = [];
+  data.badges = data.badges.filter(function(id) { return BADGES_DEF.some(function(b) { return b.id === id; }); });
+  data.lastStreakDate = typeof data.lastStreakDate === "string" ? data.lastStreakDate : "";
+  data.lastOpen = typeof data.lastOpen === "string" ? data.lastOpen : "";
+  data.prayersAdded = !!data.prayersAdded;
+  data.defaultsInjected_v2 = !!data.defaultsInjected_v2;
+  return data;
+}
+
 function handleImportFile(ev) {
-  var file = ev.target.files[0];
+  var file = ev && ev.target && ev.target.files ? ev.target.files[0] : null;
   if (!file) return;
-  
+  if (file.size > 5 * 1024 * 1024) {
+    alert("حجم النسخة الاحتياطية أكبر من الحد المسموح (5 ميغابايت).");
+    ev.target.value = "";
+    return;
+  }
   var reader = new FileReader();
   reader.onload = function(e) {
     try {
-      var data = JSON.parse(e.target.result);
-      if (!data.tasks || !data.categories) throw new Error("ملف غير صالح");
-      
-      if (confirm("سيتم استبدال بياناتك الحالية بالبيانات المستوردة. هل أنت متأكد؟")) {
-        if (data.tasks) saveUserData("tasks", data.tasks);
-        if (data.categories) saveUserData("categories", data.categories);
-        if (data.dailySnapshots) saveUserData("dailySnapshots", data.dailySnapshots);
-        if (data.dayNotes) saveUserData("dayNotes", data.dayNotes);
-        if (data.settings) saveUserData("settings", data.settings);
-        if (data.tasbih !== undefined) saveUserData("tasbih", data.tasbih);
-        if (data.points !== undefined) saveUserData("points", data.points);
-        if (data.badges !== undefined) saveUserData("badges", data.badges);
-        if (data.streak !== undefined) saveUserData("streak", data.streak);
-        if (data.lastStreakDate !== undefined) saveUserData("lastStreakDate", data.lastStreakDate);
-        if (data.prayersAdded !== undefined) saveUserData("prayersAdded", data.prayersAdded);
-        
-        alert("تمت الاستعادة بنجاح! سيتم إعادة تشغيل التطبيق.");
+      var data = validateBackupData(JSON.parse(e.target.result));
+      if (!confirm("سيتم استبدال بياناتك الحالية بالبيانات المستوردة. يُفضّل تصدير نسخة احتياطية أولاً. هل تريد المتابعة؟")) return;
+      saveUserData("tasks", data.tasks);
+      saveUserData("categories", data.categories);
+      saveUserData("dailySnapshots", data.dailySnapshots);
+      saveUserData("dayNotes", data.dayNotes);
+      saveUserData("settings", data.settings);
+      saveUserData("tasbih", data.tasbih);
+      saveUserData("points", data.points);
+      saveUserData("badges", data.badges);
+      saveUserData("streak", data.streak);
+      saveUserData("lastStreakDate", data.lastStreakDate);
+      saveUserData("prayersAdded", data.prayersAdded);
+      saveUserData("defaultsInjected_v2", data.defaultsInjected_v2);
+      setUserMeta("lastOpen", data.lastOpen || getTodayStr());
+      if (CLOUD_ENABLED && cloudUser) {
+        var importUid = cloudUser.uid;
+        if (cloudSaveTimer) { clearTimeout(cloudSaveTimer); cloudSaveTimer = null; }
+        writeCloudData(importUid).then(function() {
+          alert("تمت الاستعادة والتحقق من البيانات بنجاح. سيتم إعادة تشغيل التطبيق.");
+          location.reload();
+        }).catch(function(err) {
+          console.warn("Cloud backup restore failed", err);
+          alert("تم تحميل البيانات في الجلسة الحالية، لكن تعذّر حفظها سحابياً. لا تغلق التطبيق قبل التأكد من المزامنة.");
+        });
+      } else {
+        alert("تمت الاستعادة والتحقق من البيانات بنجاح. سيتم إعادة تشغيل التطبيق.");
         location.reload();
       }
     } catch (err) {
-      alert("عذراً، الملف غير صالح أو تالف.");
+      console.warn("Backup import rejected", err);
+      alert("تعذّر استيراد النسخة. تأكد أنها نسخة مِرْقاة صحيحة وغير تالفة.");
+    } finally {
+      if (ev && ev.target) ev.target.value = "";
     }
   };
+  reader.onerror = function() {
+    alert("تعذّر قراءة الملف. جرّب نسخة احتياطية أخرى.");
+    if (ev && ev.target) ev.target.value = "";
+  };
   reader.readAsText(file);
-  ev.target.value = "";
 }
 
 // ==========================================
-// 12. QUICK ISLAMIC TASKS
-// ==========================================
-function openQuickIslamicTasksModal() {
-  var boxes = document.querySelectorAll("#quick-islamic-modal input[type='checkbox']");
-  boxes.forEach(function(b) { b.checked = false; });
-  showModal("quick-islamic-modal");
-}
-function closeQuickIslamicModal() { hideModal("quick-islamic-modal"); }
-function addQuickIslamicTasks() {
-  var boxes = document.querySelectorAll("#quick-islamic-modal input[type='checkbox']:checked");
-  if (boxes.length === 0) { closeQuickIslamicModal(); return; }
-  
-  var cat = currentCategories.filter(function(c){ return c.id === currentCategoryId; })[0];
-  if (!cat) return;
-  var generalSec = cat.sections.filter(function(s){ return s.name === "مهام عامة"; })[0];
-  if (!generalSec) {
-    generalSec = { id: uid("sec_"), name: "مهام عامة" };
-    cat.sections.push(generalSec);
-    saveUserData("categories", currentCategories);
-  }
-  
-  var now = Date.now();
-  boxes.forEach(function(b, i) {
-    var title = b.value;
-    var alreadyExists = currentTasks.some(function(t){ return t.title === title && t.cat === currentCategoryId; });
-    if (!alreadyExists) {
-      currentTasks.push({
-        id: now + i, title: title, cat: currentCategoryId, section: generalSec.id,
-        freq: "daily", times: [], notes: "", hasQty: false, target: 0, unit: "", current: 0, done: false,
-        optionGroups: [], completedAt: null, lastReset: getTodayStr(), createdAt: now, priority: "medium"
-      });
-    }
-  });
-  saveUserData("tasks", currentTasks);
-  closeQuickIslamicModal();
-  renderSections();
-  playSound("add"); vibrate(15);
-}
-
-// ==========================================
-// 13. TUTORIAL (محدث ليشمل الميزات الجديدة)
+// 12. TUTORIAL
 // ==========================================
 function isSplashVisible() {
   var s = document.getElementById("splash-screen");
@@ -1855,7 +2360,7 @@ var TUT_STEPS = [
   },
   {
     title: "سجل الإنجاز 📊",
-    text: "هنا ترى التقرير الأسبوعي، الخريطة الحرارية لآخر 30 يوماً، ورسم بياني للأداء. اضغط أي يوم لرؤية تفاصيله.",
+    text: "هنا ترى التقرير الأسبوعي، والخريطة الحرارية. يمكنك التبديل بين عرض يومي، شهري، وسنوي لتصفح إنجازاتك!",
     selector: ".weekly-stats-card", fallbackSelector: "#history-content",
     position: "bottom", action: "goHistory"
   },
@@ -1863,12 +2368,6 @@ var TUT_STEPS = [
     title: "قائمة القوائم",
     text: "ارجع للرئيسية، واضغط على أي قائمة لفتحها. القائمة تحتوي على أصناف لتنظيم المهام.",
     selector: "#home-lists", position: "bottom", action: "goHome"
-  },
-  {
-    title: "المهام الإيمانية السريعة ⚙️",
-    text: "داخل القسم الديني، ستجد زر (إضافة مهام إيمانية سريعة) يضيف بضغطة واحدة: صلاة الضحى، الوتر، أذكار الصباح والمساء، وقراءة القرآن.",
-    selector: "#quick-islamic-btn", fallbackSelector: "#sections-list",
-    position: "bottom", action: "openFirstCategory"
   },
   {
     title: "المهام داخل الصنف",
@@ -1900,13 +2399,6 @@ function runTutAction(name) {
     if (name === "goHome") goHome();
     else if (name === "goHistory") goToHistory();
     else if (name === "goSettings") goToSettings();
-    else if (name === "openTodayHistory") {
-      if (!document.getElementById("history-screen").classList.contains("active")) goToHistory();
-      historyState.view = "categories";
-      historyState.selectedDate = getTodayStr();
-      historyState.selectedCatId = null;
-      renderHistory();
-    }
     else if (name === "openFirstCategory") {
       var cat = findFirstCategoryWithTasks();
       if (cat) openCategory(cat.id);
@@ -2050,22 +2542,23 @@ function restartTutorial() {
 }
 
 // ==========================================
-// 14. AUTO SNAPSHOT + RESET
+// 13. AUTO SNAPSHOT + RESET
 // ==========================================
 function autoSnapshot() {
   var today = getTodayStr();
-  var lastOpen = getUserMeta("lastOpen");
+  var rawLastOpen = getUserMeta("lastOpen");
+  var lastOpen = normalizeDateKey(rawLastOpen);
   if (!lastOpen || lastOpen === today) { setUserMeta("lastOpen", today); return; }
-  var snapshots = loadUserData("dailySnapshots", {});
+  var snapshots = loadUserData("dailySnapshots", {}) || {};
   if (!snapshots[lastOpen]) {
     var catsSnap = [], totalAll = 0, compAll = 0;
     currentCategories.forEach(function(c) {
-      var catTasks = currentTasks.filter(function(t){ return t.cat === c.id; });
-      if (catTasks.length === 0) return;
-      var doneTasks = catTasks.filter(function(t){ return t.done; });
+      var catTasks = currentTasks.filter(function(t) { return t.cat === c.id && !t.archived; });
+      if (!catTasks.length) return;
+      var doneTasks = catTasks.filter(function(t) { return !!t.done; });
       var tasksSnap = doneTasks.map(function(t) {
         var grp = [];
-        if (t.optionGroups) t.optionGroups.forEach(function(g){ if (g.selected) grp.push({ title: g.title, selected: g.selected }); });
+        if (Array.isArray(t.optionGroups)) t.optionGroups.forEach(function(g) { if (g && g.selected) grp.push({ title: g.title, selected: g.selected }); });
         return { title: t.title, groups: grp, target: t.hasQty ? t.target : null, unit: t.hasQty ? t.unit : null, completedAt: t.completedAt };
       });
       catsSnap.push({ id: c.id, name: c.name, icon: c.icon, color: c.color, total: catTasks.length, completed: doneTasks.length, percent: Math.round(doneTasks.length / catTasks.length * 100), tasks: tasksSnap });
@@ -2073,8 +2566,6 @@ function autoSnapshot() {
     });
     snapshots[lastOpen] = { date: lastOpen, categories: catsSnap, totalTasks: totalAll, completedTasks: compAll, percent: totalAll > 0 ? Math.round(compAll / totalAll * 100) : 0 };
     saveUserData("dailySnapshots", snapshots);
-    setUserMeta("lastOpen", today);
-    return;
   }
   setUserMeta("lastOpen", today);
 }
@@ -2084,63 +2575,77 @@ function resetDailyTasks() {
   var todayDay = new Date().getDay();
   var changed = false;
   currentTasks.forEach(function(t) {
+    if (!t || typeof t !== "object") return;
+    var lastReset = normalizeDateKey(t.lastReset);
+    if (t.freq === "once") {
+      var createdDay = normalizeDateKey(t.createdAt ? new Date(t.createdAt) : t.lastReset);
+      if (!t.archived && createdDay && createdDay !== today) {
+        t.archived = true;
+        changed = true;
+      }
+      return;
+    }
     var needsReset = false;
-    
-    if (t.freq === "daily" && t.lastReset !== today) {
+    if (["daily", "custom"].indexOf(t.freq) !== -1 && lastReset !== today) {
       needsReset = true;
-    } else if (t.freq === "weekly" && t.lastReset !== today) {
-      var lastDate = new Date(t.lastReset);
-      var todayDate = new Date(today);
-      var diffTime = Math.abs(todayDate - lastDate);
-      var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (diffDays >= 7) needsReset = true;
-    } else if (t.freq === "custom" && t.lastReset !== today) {
-      if (t.days && t.days.indexOf(todayDay) !== -1) {
-        needsReset = true;
+    } else if (t.freq === "weekly" && lastReset !== today) {
+      var days = Array.isArray(t.days) ? t.days : [];
+      if (days.length) needsReset = days.indexOf(todayDay) !== -1;
+      else {
+        var lastDate = t.lastReset ? new Date(t.lastReset) : null;
+        var todayDate = new Date();
+        if (lastDate && !isNaN(lastDate.getTime())) {
+          var diffDays = Math.floor((new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()) - new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate())) / 86400000);
+          needsReset = diffDays >= 7;
+        }
       }
     }
-
     if (needsReset) {
-      if (t.done) {
-        t.done = false; t.current = 0; t.completedAt = null;
-        if (t.optionGroups) t.optionGroups.forEach(function(g){ g.selected = null; });
-      }
+      t.done = false;
+      t.current = 0;
+      t.completedAt = null;
+      if (Array.isArray(t.optionGroups)) t.optionGroups.forEach(function(g) { g.selected = null; });
       t.lastReset = today;
       changed = true;
     }
   });
-  if (changed) saveUserData("tasks", currentTasks);
+  if (changed) saveTasks();
 }
 
 // ==========================================
-// 15. STREAKS & PRAYERS
+// 14. STREAKS & PRAYERS
 // ==========================================
 function updateStreakOnOpen() {
-  var today = new Date().toDateString();
-  var lastDate = loadUserData("lastStreakDate", "");
-  var streak = loadUserData("streak", 0);
-  var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-
-  if (lastDate === today) { /* already updated */ }
-  else if (lastDate === yesterday.toDateString()) { /* keep streak */ }
-  else if (lastDate !== "") { streak = 0; saveUserData("streak", 0); }
-  saveUserData("lastStreakDate", today);
-  document.getElementById("streak-count").textContent = streak;
-  document.getElementById("streak-widget").style.display = streak > 0 ? "flex" : "none";
+  var today = getTodayStr();
+  var lastDate = normalizeDateKey(loadUserData("lastStreakDate", ""));
+  var yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  var yesterday = getDateStr(yesterdayDate);
+  var streak = Number(loadUserData("streak", 0)) || 0;
+  // Opening the app must not count as completing a task or consume today's streak update.
+  if (!lastDate || (lastDate !== today && lastDate !== yesterday)) streak = 0;
+  var countEl = document.getElementById("streak-count");
+  var widget = document.getElementById("streak-widget");
+  if (countEl) countEl.textContent = String(streak);
+  if (widget) widget.style.display = streak > 0 ? "flex" : "none";
 }
 
 function checkStreakOnCompletion() {
-  var today = new Date().toDateString();
-  var lastDate = loadUserData("lastStreakDate", "");
-  var streak = loadUserData("streak", 0);
-  if (lastDate !== today) {
-    streak++;
-    saveUserData("streak", streak);
-    saveUserData("lastStreakDate", today);
-    document.getElementById("streak-count").textContent = streak;
-    document.getElementById("streak-widget").style.display = "flex";
-    checkBadges();
-  }
+  var today = getTodayStr();
+  var lastDate = normalizeDateKey(loadUserData("lastStreakDate", ""));
+  var streak = Number(loadUserData("streak", 0)) || 0;
+  if (lastDate === today) return;
+  var yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  var yesterday = getDateStr(yesterdayDate);
+  streak = lastDate === yesterday ? streak + 1 : 1;
+  saveUserData("streak", streak);
+  saveUserData("lastStreakDate", today);
+  var countEl = document.getElementById("streak-count");
+  var widget = document.getElementById("streak-widget");
+  if (countEl) countEl.textContent = String(streak);
+  if (widget) widget.style.display = "flex";
+  checkBadges();
 }
 
 function fetchPrayerTimes() {
@@ -2155,23 +2660,33 @@ function fetchPrayerTimes() {
           { name: "الفجر", time: t.Fajr }, { name: "الظهر", time: t.Dhuhr },
           { name: "العصر", time: t.Asr }, { name: "المغرب", time: t.Maghrib }, { name: "العشاء", time: t.Isha }
         ];
+        
+        var nextPrayer = null;
         for (var i=0; i<prayers.length; i++) {
           var p = prayers[i];
           var parts = p.time.split(":");
           var pMins = parseInt(parts[0],10) * 60 + parseInt(parts[1],10);
           if (pMins > now) {
-            document.getElementById("prayer-name").textContent = "صلاة " + p.name;
-            document.getElementById("prayer-time").textContent = p.time;
-            document.getElementById("prayer-widget").style.display = "flex";
+            nextPrayer = p;
             break;
           }
+        }
+        
+        if (nextPrayer) {
+          document.getElementById("prayer-name").textContent = "صلاة " + nextPrayer.name;
+          document.getElementById("prayer-time").textContent = nextPrayer.time;
+          document.getElementById("prayer-widget").style.display = "flex";
+        } else {
+          document.getElementById("prayer-name").textContent = "صلاة الفجر (غداً)";
+          document.getElementById("prayer-time").textContent = prayers[0].time;
+          document.getElementById("prayer-widget").style.display = "flex";
         }
       }).catch(function(){});
   }, function(){});
 }
 
 // ==========================================
-// 16. NAVIGATION
+// 15. NAVIGATION
 // ==========================================
 function showScreen(name) {
   document.querySelectorAll(".screen").forEach(function(s) { s.classList.remove("active"); });
@@ -2182,7 +2697,10 @@ function showScreen(name) {
   if (map[name]) document.getElementById(map[name]).classList.add("active");
 }
 function goHome() { currentCategoryId = null; currentSectionId = null; renderHome(); showScreen("home"); }
-function goToHistory() { historyState = { view: "days", selectedDate: null, selectedCatId: null }; renderHistory(); showScreen("history"); }
+function goToHistory() { 
+  historyState = { view: "days", mode: 'daily', selectedDate: null, selectedCatId: null, currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear() }; 
+  renderHistory(); showScreen("history"); 
+}
 function goToSettings() { renderSettings(); showScreen("settings"); }
 
 function openCategory(catId) { currentCategoryId = catId; currentSectionId = null; renderSections(); showScreen("sections"); playSound("tap"); }
@@ -2194,13 +2712,13 @@ function backFromTasks() {
 }
 
 // ==========================================
-// 17. HOME
+// 16. HOME
 // ==========================================
 function renderHome() {
   var container = document.getElementById("home-lists");
   var html = "";
   currentCategories.forEach(function(cat) {
-    var catTasks = currentTasks.filter(function(t){ return t.cat === cat.id; });
+    var catTasks = currentTasks.filter(function(t){ return t.cat === cat.id && !t.archived; });
     var total = catTasks.length;
     var done = catTasks.filter(function(t){ return t.done; }).length;
     var pct = total > 0 ? Math.round(done / total * 100) : 0;
@@ -2245,7 +2763,7 @@ function deleteCategory(catId, ev) {
 }
 
 // ==========================================
-// 18. SECTIONS
+// 17. SECTIONS
 // ==========================================
 function renderSections() {
   var cat = currentCategories.filter(function(c){ return c.id === currentCategoryId; })[0];
@@ -2254,14 +2772,11 @@ function renderSections() {
   var secs = cat.sections || [];
   var totalTasks = 0, doneTasks = 0;
   secs.forEach(function(s) {
-    var st = currentTasks.filter(function(t){ return t.cat === cat.id && t.section === s.id; });
+    var st = currentTasks.filter(function(t){ return t.cat === cat.id && t.section === s.id && !t.archived; });
     totalTasks += st.length;
     doneTasks += st.filter(function(t){ return t.done; }).length;
   });
   document.getElementById("sections-subtitle").textContent = secs.length + " صنف · " + doneTasks + "/" + totalTasks + " منجز";
-
-  var quickBtn = document.getElementById("quick-islamic-btn");
-  if (quickBtn) quickBtn.style.display = (currentCategoryId === "religion") ? "flex" : "none";
 
   var hadithC = document.getElementById("sections-hadith-container");
   var hadith = CATEGORY_HADITHS[currentCategoryId];
@@ -2277,7 +2792,7 @@ function renderSections() {
   var dark = darken(cat.color, 0.22);
   var html = "";
   secs.forEach(function(sec) {
-    var secTasks = currentTasks.filter(function(t){ return t.cat === cat.id && t.section === sec.id; });
+    var secTasks = currentTasks.filter(function(t){ return t.cat === cat.id && t.section === sec.id && !t.archived; });
     var total = secTasks.length;
     var done = secTasks.filter(function(t){ return t.done; }).length;
     var pct = total > 0 ? Math.round(done / total * 100) : 0;
@@ -2322,7 +2837,7 @@ function saveSection() {
 }
 
 // ==========================================
-// 19. TASKS & DRAG/DROP
+// 18. TASKS & DRAG/DROP
 // ==========================================
 var sortableInstance = null;
 function renderTasks() {
@@ -2331,7 +2846,14 @@ function renderTasks() {
   var sec = cat && cat.sections ? cat.sections.filter(function(s){ return s.id === currentSectionId; })[0] : null;
   document.getElementById("tasks-title").textContent = sec ? sec.name : (cat ? cat.name : "المهام");
 
-  var tasks = currentTasks.filter(function(t){ return t.cat === currentCategoryId && t.section === currentSectionId; });
+  var todayDay = new Date().getDay();
+  var tasks = currentTasks.filter(function(t){ 
+    if (t.cat !== currentCategoryId || t.section !== currentSectionId || t.archived) return false;
+    if ((t.freq === "custom" || t.freq === "weekly") && Array.isArray(t.days) && t.days.length > 0) {
+      if (t.days.indexOf(todayDay) === -1) return false;
+    }
+    return true;
+  });
 
   tasks.sort(function(a, b) {
     var pMap = { high: 1, medium: 2, low: 3 };
@@ -2356,19 +2878,24 @@ function renderTasks() {
   listEl.innerHTML = html;
 
   if (sortableInstance) sortableInstance.destroy();
-  sortableInstance = new Sortable(listEl, {
-    handle: '.drag-handle',
-    animation: 150,
-    onEnd: function() {
-      var newOrder = Array.from(listEl.children).map(function(c) { return parseInt(c.getAttribute('data-id')); });
-      newOrder.forEach(function(id, index) {
-        var t = findTask(id);
-        if (t) t.order = index;
-      });
-      saveUserData("tasks", currentTasks);
-      renderTasks();
-    }
-  });
+  if (typeof Sortable === "function") {
+    sortableInstance = new Sortable(listEl, {
+      handle: '.drag-handle',
+      animation: 150,
+      onEnd: function() {
+        var newOrder = Array.from(listEl.children).map(function(c) { return Number(c.getAttribute('data-id')); });
+        newOrder.forEach(function(id, index) {
+          var t = findTask(id);
+          if (t) t.order = index;
+        });
+        saveTasks();
+        renderTasks();
+      }
+    });
+  } else {
+    sortableInstance = null;
+    console.warn("SortableJS did not load; drag-and-drop is unavailable.");
+  }
 }
 
 function buildTaskHTML(t, idx) {
@@ -2401,7 +2928,7 @@ function buildTaskHTML(t, idx) {
   var timesHTML = "";
   if (t.times && t.times.length > 0) {
     timesHTML = "<div class='task-times'>";
-    t.times.forEach(function(tm) { timesHTML += "<div class='time-badge'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>" + tm + "</div>"; });
+    t.times.forEach(function(tm) { timesHTML += "<div class='time-badge'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>" + escapeHTML(tm) + "</div>"; });
     timesHTML += "</div>";
   }
 
@@ -2409,7 +2936,7 @@ function buildTaskHTML(t, idx) {
   if (t.hasQty) {
     var pct = t.target > 0 ? Math.min(100, Math.round((t.current || 0) / t.target * 100)) : 0;
     var btns = !t.done ? "<div class='qty-controls'><button class='ctrl-btn minus' type='button' onclick='adjustProgress(" + t.id + ",-1,event)'>−</button><button class='ctrl-btn' type='button' onclick='adjustProgress(" + t.id + ",1,event)'>+</button></div>" : "";
-    progressHTML = "<div class='task-progress'><div class='task-progress-bar'><div class='task-progress-fill' style='width:" + pct + "%'></div></div><span class='task-progress-text'>" + (t.current || 0) + "/" + t.target + " " + (t.unit || "") + "</span>" + btns + "</div>";
+    progressHTML = "<div class='task-progress'><div class='task-progress-bar'><div class='task-progress-fill' style='width:" + pct + "%'></div></div><span class='task-progress-text'>" + (t.current || 0) + "/" + t.target + " " + escapeHTML(t.unit || "") + "</span>" + btns + "</div>";
   }
 
   var freqLabel = "";
@@ -2425,7 +2952,7 @@ function buildTaskHTML(t, idx) {
     "<div class='task-row'>" +
       "<div class='drag-handle'>⋮⋮</div>" +
       checkHTML +
-      "<div class='task-main'><div class='task-title'>" + escapeHTML(t.title) + "</div></div>" +
+      "<div class='task-main'><div class='task-title'>" + escapeHTML(t.title) + "</div>" + (t.notes ? "<div class='task-notes-preview' style='font-size:12px;color:var(--muted);line-height:1.5;margin-top:4px;'>" + escapeHTML(t.notes) + "</div>" : "") + "</div>" +
       "<div class='task-actions'>" + focusBtn + "<button class='task-action-btn edit' type='button' onclick='openEditTask(" + t.id + ")'>" + ICONS.edit + "</button><button class='task-action-btn delete' type='button' onclick='deleteTask(" + t.id + ", event)'>" + ICONS.del + "</button></div>" +
     "</div>" + groupsHTML + timesHTML + progressHTML + freqHTML +
   "</div>";
@@ -2433,6 +2960,16 @@ function buildTaskHTML(t, idx) {
 
 function findTask(id) { for (var i = 0; i < currentTasks.length; i++) if (currentTasks[i].id === id) return currentTasks[i]; return null; }
 function saveTasks() { saveUserData("tasks", currentTasks); }
+
+
+function rewardTaskCompletion(task, amount) {
+  if (!task) return false;
+  var today = getTodayStr();
+  if (task.lastRewardDate === today) return false;
+  task.lastRewardDate = today;
+  addPoints(amount);
+  return true;
+}
 
 function toggleTask(id, ev) {
   if (ev) ev.stopPropagation();
@@ -2446,7 +2983,7 @@ function toggleTask(id, ev) {
     t.done = true; t.completedAt = Date.now();
     if (t.hasQty) t.current = t.target;
     checkStreakOnCompletion();
-    addPoints(t.hasQty ? 15 : 10);
+    rewardTaskCompletion(t, t.hasQty ? 15 : 10);
     playSound("complete"); vibrate(25);
   }
   saveTasks(); renderTasks();
@@ -2462,7 +2999,7 @@ function selectGroupOption(taskId, gi, oi, ev) {
   if (any && !t.done) {
     t.done = true; t.completedAt = Date.now();
     checkStreakOnCompletion();
-    addPoints(10);
+    rewardTaskCompletion(t, 10);
     playSound("complete"); vibrate(25);
   }
   else if (!any && t.done) { t.done = false; t.completedAt = null; playSound("tap"); }
@@ -2474,13 +3011,19 @@ function adjustProgress(id, delta, ev) {
   if (ev) ev.stopPropagation();
   var t = findTask(id); if (!t || !t.hasQty) return;
   t.current = Math.max(0, Math.min(t.target, (t.current || 0) + delta));
-  if (t.current >= t.target && !t.done) {
-    t.done = true; t.completedAt = Date.now();
-    checkStreakOnCompletion();
-    addPoints(15);
-    playSound("complete"); vibrate(25);
+  if (t.current >= t.target) {
+    if (!t.done) {
+      t.done = true; t.completedAt = Date.now();
+      checkStreakOnCompletion();
+      rewardTaskCompletion(t, 15);
+      playSound("complete"); vibrate(25);
+    }
+  } else {
+    if (t.done) { 
+      t.done = false; t.completedAt = null;
+    }
+    playSound("tap"); vibrate(8);
   }
-  else { playSound("tap"); vibrate(8); }
   saveTasks(); renderTasks();
 }
 
@@ -2497,7 +3040,7 @@ function deleteTask(id, ev) {
 }
 
 // ==========================================
-// 20. TASK MODAL
+// 19. TASK MODAL
 // ==========================================
 function openAddTask() {
   editingTaskId = null;
@@ -2606,7 +3149,7 @@ function saveTask() {
     if (g.title.trim() && opts.length > 0) cleanGroups.push({ title: g.title.trim(), options: opts, selected: g.selected || null });
   });
 
-  if (formState.freq === "custom" && formState.days.length === 0) {
+  if ((formState.freq === "custom" || formState.freq === "weekly") && formState.days.length === 0) {
     alert("اختر يوماً واحداً على الأقل");
     return;
   }
@@ -2618,10 +3161,13 @@ function saveTask() {
       t.priority = formState.priority; t.time = time; t.days = formState.days.slice();
       if (t.hasQty) { t.target = target; t.unit = unit; if (t.current > target) t.current = target; } else { t.target = 0; t.unit = ""; t.current = 0; }
       t.optionGroups = cleanGroups;
+      t.archived = false;
+      if (t.lastRewardDate === undefined) t.lastRewardDate = "";
       var any = cleanGroups.some(function(g){ return !!g.selected; });
       if (!any && cleanGroups.length > 0 && t.done && !t.hasQty) { t.done = false; t.completedAt = null; }
       else if (any && !t.done) { t.done = true; t.completedAt = Date.now(); }
     }
+    saveTasks();
     closeTaskModal(); renderTasks(); playSound("add"); vibrate(15);
   } else {
     currentTasks.push({
@@ -2631,15 +3177,16 @@ function saveTask() {
       priority: formState.priority, order: currentTasks.length,
       hasQty: formState.hasQty, target: target, unit: unit, current: 0, done: false,
       optionGroups: cleanGroups, completedAt: null, lastReset: getTodayStr(), createdAt: Date.now(),
-      days: formState.days.slice()
+      days: formState.days.slice(), archived: false, lastRewardDate: ""
     });
+    saveTasks();
     closeTaskModal(); renderTasks(); playSound("add"); vibrate(15);
   }
 }
 function closeTaskModal() { hideModal("task-modal"); editingTaskId = null; }
 
 // ==========================================
-// 21. TIME PICKER
+// 20. TIME PICKER
 // ==========================================
 var pickerHour = 12, pickerMinute = "00", pickerPeriod = "ص";
 function openTimePicker() { showModal("time-modal"); renderTimeGrids(); }
@@ -2657,14 +3204,18 @@ function setHour(h) { pickerHour = h; renderTimeGrids(); }
 function setMinute(m) { pickerMinute = m; renderTimeGrids(); }
 function setPeriod(p) { pickerPeriod = p; renderTimeGrids(); }
 function confirmTime() {
-  var hh = pickerHour < 10 ? "0" + pickerHour : pickerHour;
+  var hh = pickerHour < 10 ? "0" + pickerHour : String(pickerHour);
   var str = hh + ":" + pickerMinute + " " + pickerPeriod;
   if (formTimes.indexOf(str) === -1) formTimes.push(str);
-  renderTimesEditor(); closeTimePicker(); playSound("add");
+  renderTimesEditor();
+  closeTimePicker();
+  if (typeof Notification !== 'undefined' && Notification.permission === "default" && typeof Notification.requestPermission === "function") {
+    Notification.requestPermission().then(function() { renderSettings(); }).catch(function() {});
+  }
 }
 
 // ==========================================
-// 22. MODAL CONTROL + DAILY NOTES
+// 21. MODAL CONTROL + DAILY NOTES
 // ==========================================
 function showModal(id) { document.getElementById("overlay").classList.add("show"); document.getElementById(id).classList.add("show"); }
 function hideModal(id) {
@@ -2703,7 +3254,7 @@ function saveDayNote() {
 }
 
 // ==========================================
-// 23. CATEGORY MODAL
+// 22. CATEGORY MODAL
 // ==========================================
 function openCategoryModal() {
   document.getElementById("cat-name-input").value = "";
@@ -2740,12 +3291,17 @@ function saveCategory() {
   if (selectedPresetCat && selectedPresetCat.name === name) { newId = selectedPresetCat.id; color = selectedPresetCat.color; icon = selectedPresetCat.icon; }
   else { newId = uid("cat_"); color = selectedCatColor || CATEGORY_COLORS[0]; icon = "personal"; }
   currentCategories.push({ id: newId, name: name, icon: icon, color: color, sections: [], createdAt: Date.now() });
-  saveUserData("categories", currentCategories); closeCategoryModal(); renderHome(); playSound("add"); vibrate(15);
+  saveUserData("categories", currentCategories); 
+  
+  // Re-run template ensuring if they add "دينية" it gets populated immediately
+  injectDefaultTemplates();
+  
+  closeCategoryModal(); renderHome(); playSound("add"); vibrate(15);
 }
 function closeCategoryModal() { hideModal("category-modal"); }
 
 // ==========================================
-// 24. HISTORY (with Heatmap & Weekly Stats)
+// 23. HISTORY (with Heatmap & Weekly Stats & Monthly/Yearly modes)
 // ==========================================
 function percentToGradient(pct) {
   if (pct >= 100) return "linear-gradient(135deg, #6fa88f 0%, #4a7562 100%)";
@@ -2757,7 +3313,7 @@ function percentToGradient(pct) {
 function buildLiveDayData() {
   var catsData = [], total = 0, comp = 0;
   currentCategories.forEach(function(c) {
-    var catTasks = currentTasks.filter(function(t){ return t.cat === c.id; });
+    var catTasks = currentTasks.filter(function(t){ return t.cat === c.id && !t.archived; });
     if (catTasks.length === 0) return;
     var doneTasks = catTasks.filter(function(t){ return t.done; });
     var tasksSnap = doneTasks.map(function(t) {
@@ -2779,24 +3335,53 @@ function renderHistory() {
   var backBtn = document.getElementById("history-back-btn");
   var homeBtn = document.getElementById("history-home-btn");
 
-  if (historyState.view === "days") {
-    titleEl.textContent = "سجل الإنجاز"; backBtn.classList.remove("show"); homeBtn.style.display = "flex";
-    renderHistoryDays(container, subEl);
-  } else if (historyState.view === "categories") {
-    titleEl.textContent = formatDateLabelShort(historyState.selectedDate); subEl.textContent = formatDateFull(historyState.selectedDate);
-    backBtn.classList.add("show"); homeBtn.style.display = "none";
-    renderHistoryCategories(container);
+  if (!historyState.mode) historyState.mode = 'daily';
+
+  if (historyState.view === "categories" || historyState.view === "tasks") {
+    if (historyState.view === "categories") {
+      titleEl.textContent = formatDateLabelShort(historyState.selectedDate); subEl.textContent = formatDateFull(historyState.selectedDate);
+      backBtn.classList.add("show"); homeBtn.style.display = "none";
+      renderHistoryCategories(container);
+    } else {
+      var dd = getDayData(historyState.selectedDate);
+      var cat = dd && dd.categories ? dd.categories.filter(function(c){ return c.id === historyState.selectedCatId; })[0] : null;
+      titleEl.textContent = cat ? cat.name : "المهام";
+      subEl.textContent = formatDateLabelShort(historyState.selectedDate);
+      backBtn.classList.add("show"); homeBtn.style.display = "none";
+      renderHistoryTasks(container);
+    }
+    return;
+  }
+
+  var tabsHtml = "<div style='display:flex; gap:8px; margin-bottom:16px; justify-content:center;'>" +
+    "<button class='chip " + (historyState.mode === 'daily' ? 'active' : '') + "' onclick='switchHistoryMode(\"daily\")'>يومي</button>" +
+    "<button class='chip " + (historyState.mode === 'monthly' ? 'active' : '') + "' onclick='switchHistoryMode(\"monthly\")'>شهري</button>" +
+    "<button class='chip " + (historyState.mode === 'yearly' ? 'active' : '') + "' onclick='switchHistoryMode(\"yearly\")'>سنوي</button>" +
+  "</div>";
+
+  backBtn.classList.remove("show"); homeBtn.style.display = "flex";
+
+  if (historyState.mode === 'daily') {
+    titleEl.textContent = "سجل الإنجاز";
+    renderHistoryDays(container, subEl, tabsHtml);
+  } else if (historyState.mode === 'monthly') {
+    titleEl.textContent = "السجل الشهري";
+    subEl.textContent = "ملخص الشهر";
+    renderHistoryMonthly(container, tabsHtml);
   } else {
-    var dd = getDayData(historyState.selectedDate);
-    var cat = dd && dd.categories ? dd.categories.filter(function(c){ return c.id === historyState.selectedCatId; })[0] : null;
-    titleEl.textContent = cat ? cat.name : "المهام";
-    subEl.textContent = formatDateLabelShort(historyState.selectedDate);
-    backBtn.classList.add("show"); homeBtn.style.display = "none";
-    renderHistoryTasks(container);
+    titleEl.textContent = "السجل السنوي";
+    subEl.textContent = "ملخص السنة";
+    renderHistoryYearly(container, tabsHtml);
   }
 }
 
-function renderHistoryDays(container, subEl) {
+function switchHistoryMode(mode) {
+  historyState.mode = mode;
+  historyState.view = "days";
+  renderHistory();
+}
+
+function renderHistoryDays(container, subEl, tabsHtml) {
   var snapshots = loadUserData("dailySnapshots", {});
   var today = buildLiveDayData();
   var all = [];
@@ -2805,9 +3390,8 @@ function renderHistoryDays(container, subEl) {
   all.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
   subEl.textContent = all.length + " يوم مسجل";
 
-  if (all.length === 0) { container.innerHTML = "<div class='empty'><h3>لا يوجد سجل بعد</h3><p>سيظهر هنا إنجازك بعد أول يوم</p><div class='dhikr-card'>" + getRandomDhikr() + "</div></div>"; return; }
+  if (all.length === 0) { container.innerHTML = tabsHtml + "<div class='empty'><h3>لا يوجد سجل بعد</h3><p>سيظهر هنا إنجازك بعد أول يوم</p><div class='dhikr-card'>" + getRandomDhikr() + "</div></div>"; return; }
 
-  // 1. التقرير الأسبوعي
   var weekTotalTasks = 0, weekCompleted = 0, bestDayName = "—", bestDayPct = 0;
   var dayNames = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
   for (var i = 0; i < 7; i++) {
@@ -2828,7 +3412,6 @@ function renderHistoryDays(container, subEl) {
     "<div class='ws-item'><div class='ws-value' style='font-size:14px; padding-top:2px;'>" + bestDayName + "</div><div class='ws-label'>أفضل يوم</div></div>" +
   "</div>";
 
-  // 2. الخريطة الحرارية
   var heatmapHtml = "<div class='heatmap-container'><h3 style='font-size:14px; font-weight:700; text-align:center; margin-bottom:8px;'>خريطة الإنجاز (آخر 30 يوماً)</h3><div class='heatmap-grid'>";
   for (var j = 29; j >= 0; j--) {
     var dt2 = new Date(); dt2.setDate(dt2.getDate() - j);
@@ -2844,7 +3427,6 @@ function renderHistoryDays(container, subEl) {
   }
   heatmapHtml += "</div></div>";
 
-  // 3. الرسم البياني (7 أيام)
   var last7Days = [];
   for (var k = 6; k >= 0; k--) {
     var dt7 = new Date(); dt7.setDate(dt7.getDate() - k);
@@ -2859,7 +3441,7 @@ function renderHistoryDays(container, subEl) {
     return "<div style='flex:1; text-align:center;'><div class='chart-bar'><div class='chart-bar-fill' style='height:" + day.percent + "%'></div></div><div class='chart-label'>" + day.label + "</div></div>";
   }).join("");
 
-  var html = weeklyHtml + heatmapHtml + "<div class='hist-summary'><h3 style='font-size:16px; font-weight:700;'>أداء آخر 7 أيام</h3><div class='hist-chart'>" + chartHtml + "</div></div>";
+  var html = tabsHtml + weeklyHtml + heatmapHtml + "<div class='hist-summary'><h3 style='font-size:16px; font-weight:700;'>أداء آخر 7 أيام</h3><div class='hist-chart'>" + chartHtml + "</div></div>";
 
   html += all.map(function(day) {
     var pct = day.percent || 0;
@@ -2873,6 +3455,124 @@ function renderHistoryDays(container, subEl) {
   }).join("");
 
   container.innerHTML = html;
+}
+
+function renderHistoryMonthly(container, tabsHtml) {
+  var m = historyState.currentMonth !== undefined ? historyState.currentMonth : new Date().getMonth();
+  var y = historyState.currentYear !== undefined ? historyState.currentYear : new Date().getFullYear();
+  var daysInMonth = new Date(y, m + 1, 0).getDate();
+  var monthNames = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  
+  var totalTasks = 0, completedTasks = 0;
+  var daysData = [];
+  for (var i = 1; i <= daysInMonth; i++) {
+    var dStr = y + "-" + (m + 1) + "-" + i;
+    var dd = getDayData(dStr);
+    if (dd) {
+      totalTasks += dd.totalTasks;
+      completedTasks += dd.completedTasks;
+      daysData.push({ day: i, percent: dd.percent, date: dStr });
+    } else {
+      daysData.push({ day: i, percent: -1, date: dStr });
+    }
+  }
+  
+  var avg = totalTasks > 0 ? Math.round(completedTasks/totalTasks*100) : 0;
+  
+  var html = tabsHtml + 
+    "<div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:var(--surface); padding:10px; border-radius:12px;'>" +
+      "<button class='header-btn' onclick='changeHistoryMonth(-1)'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><polyline points='15 18 9 12 15 6'/></svg></button>" +
+      "<div style='font-size:16px; font-weight:700;'>" + monthNames[m] + " " + y + "</div>" +
+      "<button class='header-btn' onclick='changeHistoryMonth(1)'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><polyline points='9 18 15 12 9 6'/></svg></button>" +
+    "</div>" +
+    "<div class='weekly-stats-card' style='margin-bottom:16px;'>" +
+      "<div class='ws-item'><div class='ws-value'>" + completedTasks + "</div><div class='ws-label'>مهام منجزة</div></div>" +
+      "<div class='ws-item'><div class='ws-value'>" + avg + "%</div><div class='ws-label'>نسبة الإنجاز</div></div>" +
+    "</div>" +
+    "<div class='heatmap-container'><h3 style='font-size:14px; font-weight:700; text-align:center; margin-bottom:8px;'>أداء أيام الشهر</h3><div class='heatmap-grid' style='grid-template-columns: repeat(7, 1fr);'>";
+    
+  daysData.forEach(function(d) {
+    var lvl = 0;
+    if (d.percent > 0 && d.percent <= 25) lvl = 1;
+    else if (d.percent > 25 && d.percent <= 50) lvl = 2;
+    else if (d.percent > 50 && d.percent <= 80) lvl = 3;
+    else if (d.percent > 80) lvl = 4;
+    html += "<div class='heatmap-cell level-" + lvl + "' title='يوم " + d.day + " (" + (d.percent >= 0 ? d.percent + "%" : "لا يوجد") + ")' style='aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--text);'>" + d.day + "</div>";
+  });
+  
+  html += "</div></div>";
+  container.innerHTML = html;
+}
+
+function changeHistoryMonth(delta) {
+  var m = historyState.currentMonth !== undefined ? historyState.currentMonth : new Date().getMonth();
+  var y = historyState.currentYear !== undefined ? historyState.currentYear : new Date().getFullYear();
+  m += delta;
+  if (m < 0) { m = 11; y--; }
+  else if (m > 11) { m = 0; y++; }
+  historyState.currentMonth = m;
+  historyState.currentYear = y;
+  renderHistory();
+}
+
+function renderHistoryYearly(container, tabsHtml) {
+  var y = historyState.currentYear !== undefined ? historyState.currentYear : new Date().getFullYear();
+  var monthNames = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  
+  var html = tabsHtml + 
+    "<div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:var(--surface); padding:10px; border-radius:12px;'>" +
+      "<button class='header-btn' onclick='changeHistoryYear(-1)'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><polyline points='15 18 9 12 15 6'/></svg></button>" +
+      "<div style='font-size:16px; font-weight:700;'>" + y + "</div>" +
+      "<button class='header-btn' onclick='changeHistoryYear(1)'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><polyline points='9 18 15 12 9 6'/></svg></button>" +
+    "</div>";
+    
+  var yearTotal = 0, yearCompleted = 0;
+  var monthsHtml = "";
+  
+  for (var m = 0; m < 12; m++) {
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+    var mTotal = 0, mCompleted = 0;
+    for (var i = 1; i <= daysInMonth; i++) {
+      var dd = getDayData(y + "-" + (m + 1) + "-" + i);
+      if (dd) {
+        mTotal += dd.totalTasks;
+        mCompleted += dd.completedTasks;
+      }
+    }
+    yearTotal += mTotal;
+    yearCompleted += mCompleted;
+    var pct = mTotal > 0 ? Math.round(mCompleted/mTotal*100) : 0;
+    var color = pct >= 80 ? "#5a8b78" : (pct >= 50 ? "#d99a6c" : (pct > 0 ? "#c85a54" : "var(--border)"));
+    
+    monthsHtml += "<div class='history-day-card' onclick='jumpToMonth(" + m + "," + y + ")'>" +
+      "<div class='circular-progress' style='background: conic-gradient(" + color + " " + pct + "%, var(--border) 0);'><span>" + pct + "%</span></div>" +
+      "<div class='hist-info'><div class='hist-title'>" + monthNames[m] + "</div><div class='hist-date'>" + mCompleted + " من " + mTotal + " مهام</div></div>" +
+      "<div class='hist-chevron' style='transform:rotate(180deg);'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><polyline points='15 18 9 12 15 6'/></svg></div>" +
+    "</div>";
+  }
+  
+  var yearAvg = yearTotal > 0 ? Math.round(yearCompleted/yearTotal*100) : 0;
+  html += "<div class='weekly-stats-card' style='margin-bottom:16px;'>" +
+      "<div class='ws-item'><div class='ws-value'>" + yearCompleted + "</div><div class='ws-label'>مهام منجزة</div></div>" +
+      "<div class='ws-item'><div class='ws-value'>" + yearAvg + "%</div><div class='ws-label'>نسبة الإنجاز</div></div>" +
+    "</div>" + monthsHtml;
+    
+  container.innerHTML = html;
+}
+
+function jumpToMonth(m, y) {
+  historyState.currentMonth = m;
+  historyState.currentYear = y;
+  historyState.mode = 'monthly';
+  historyState.view = "days";
+  renderHistory();
+}
+
+function changeHistoryYear(delta) {
+  var y = historyState.currentYear !== undefined ? historyState.currentYear : new Date().getFullYear();
+  y += delta;
+  historyState.currentYear = y;
+  renderHistory();
 }
 
 function renderHistoryCategories(container) {
@@ -2930,7 +3630,11 @@ function renderHistoryTasks(container) {
 
 function openHistoryDay(d) { historyState.view = "categories"; historyState.selectedDate = d; historyState.selectedCatId = null; renderHistory(); }
 function openHistoryCat(c) { historyState.view = "tasks"; historyState.selectedCatId = c; renderHistory(); }
-function historyBack() { if (historyState.view === "tasks") { historyState.view = "categories"; historyState.selectedCatId = null; } else if (historyState.view === "categories") { historyState.view = "days"; historyState.selectedDate = null; } renderHistory(); }
+function historyBack() { 
+  if (historyState.view === "tasks") { historyState.view = "categories"; historyState.selectedCatId = null; } 
+  else if (historyState.view === "categories") { historyState.view = "days"; historyState.selectedDate = null; } 
+  renderHistory(); 
+}
 
 function formatDateLabelShort(dateStr) {
   var p = dateStr.split("-"); var d = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
@@ -2953,7 +3657,7 @@ function formatTime(ts) {
 }
 
 // ==========================================
-// 25. SETTINGS & NOTIFICATIONS & BADGES UI
+// 24. SETTINGS & NOTIFICATIONS & BADGES UI
 // ==========================================
 function renderSettings() {
   var container = document.getElementById("settings-content");
@@ -2979,7 +3683,6 @@ function renderSettings() {
     "</div>";
   }
 
-  // النقاط والأوسمة
   var pts = loadUserData("points", 0);
   var badgesCount = loadUserData("badges", []).length;
   html += "<div class='settings-group'>" +
@@ -3073,22 +3776,53 @@ function buildToggle(k, l, v, icon) {
 function toggleSetting(k) { var s = loadSettings(); s[k] = !s[k]; saveSettings(s); playSound("tap"); renderSettings(); }
 
 var notifiedTasks = new Set();
+function parseReminderTime(value) {
+  if (typeof value !== "string") return null;
+  var s = value.trim();
+  var m24 = /^(\d{1,2}):(\d{2})$/.exec(s);
+  if (m24) {
+    var h24 = Number(m24[1]), min24 = Number(m24[2]);
+    if (h24 >= 0 && h24 <= 23 && min24 >= 0 && min24 <= 59) return h24 * 60 + min24;
+    return null;
+  }
+  var m12 = /^(\d{1,2}):(\d{2})\s*([صم])$/.exec(s);
+  if (!m12) return null;
+  var h = Number(m12[1]), min = Number(m12[2]);
+  if (h < 1 || h > 12 || min < 0 || min > 59) return null;
+  if (m12[3] === "ص") h = h % 12;
+  else h = (h % 12) + 12;
+  return h * 60 + min;
+}
+var notificationTimer = null;
+var notifiedTasks = new Set();
 function setupNotifications() {
-  setInterval(function() {
+  if (notificationTimer) clearInterval(notificationTimer);
+  notificationTimer = setInterval(function() {
     if (typeof Notification === 'undefined' || Notification.permission !== "granted") return;
     var now = new Date();
-    var timeStr = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+    var currentMinute = now.getHours() * 60 + now.getMinutes();
+    var today = getTodayStr();
     currentTasks.forEach(function(t) {
-      if (!t.done && t.time === timeStr && !notifiedTasks.has(t.id)) {
-        try { new Notification("مِرْقاة - تذكير", { body: "حان وقت: " + t.title }); } catch(e){}
-        notifiedTasks.add(t.id);
-      }
+      if (!t || t.done || t.archived) return;
+      if ((t.freq === "custom" || t.freq === "weekly") && Array.isArray(t.days) && t.days.length && t.days.indexOf(now.getDay()) === -1) return;
+      var times = [];
+      if (t.time) times.push(t.time);
+      if (Array.isArray(t.times)) times = times.concat(t.times);
+      times.forEach(function(time) {
+        if (parseReminderTime(time) !== currentMinute) return;
+        var key = today + "_" + String(t.id) + "_" + time;
+        if (notifiedTasks.has(key)) return;
+        try {
+          new Notification("مِرْقاة - تذكير", { body: "حان وقت: " + String(t.title || "مهمة") });
+          notifiedTasks.add(key);
+        } catch (e) { console.warn("Notification could not be shown", e); }
+      });
     });
-  }, 60000);
+  }, 15000);
 }
 
 // ==========================================
-// 26. PWA INSTALL
+// 25. PWA INSTALL
 // ==========================================
 var deferredInstallPrompt = null;
 var installAttemptedThisSession = false;
@@ -3114,25 +3848,32 @@ window.addEventListener('appinstalled', function() {
 });
 
 function triggerAutoInstallPrompt() {
-  if (!deferredInstallPrompt || isAppInstalled || installAttemptedThisSession) return false;
-  installAttemptedThisSession = true;
-  var prompt = deferredInstallPrompt;
-  deferredInstallPrompt = null;
+  if (!deferredInstallPrompt || isAppInstalled) return false;
+  var promptEvent = deferredInstallPrompt;
   try {
-    prompt.prompt();
-    prompt.userChoice.then(function() {
-      updateInstallBanner();
-      if (document.getElementById('settings-screen') && document.getElementById('settings-screen').classList.contains('active')) renderSettings();
-    }).catch(function() {});
+    // prompt() must be called directly from a user gesture (the install button).
+    var promptResult = promptEvent.prompt();
+    deferredInstallPrompt = null; // The event can be used only once; clear it after invoking prompt().
+    installAttemptedThisSession = true;
+    Promise.resolve(promptResult).catch(function(e) { console.warn("Install prompt failed", e); });
+    if (promptEvent.userChoice && typeof promptEvent.userChoice.then === "function") {
+      promptEvent.userChoice.then(function() {
+        updateInstallBanner();
+        var settingsScreen = document.getElementById('settings-screen');
+        if (settingsScreen && settingsScreen.classList.contains('active')) renderSettings();
+      }).catch(function() {});
+    }
     return true;
   } catch (e) {
+    console.warn("Install prompt unavailable", e);
     return false;
   }
 }
 
 function tryAutoInstall() {
   if (isAppInstalled) return;
-  if (deferredInstallPrompt) { triggerAutoInstallPrompt(); return; }
+  // Never open the browser install prompt automatically; it requires a direct user gesture.
+  updateInstallBanner();
   if (isIOSDevice() && SafeStorage.getItem('mrq_ios_install_shown') !== '1') {
     SafeStorage.setItem('mrq_ios_install_shown', '1');
     setTimeout(showIosInstallModal, 500);
@@ -3160,20 +3901,23 @@ function dismissInstallBanner() {
 
 function installApp() {
   if (isAppInstalled) return;
-  if (deferredInstallPrompt) { installAttemptedThisSession = false; triggerAutoInstallPrompt(); return; }
-  if (isIOSDevice()) { showIosInstallModal(); return; }
-  if (/Android/.test(navigator.userAgent || '')) {
-    setTimeout(function() { if (deferredInstallPrompt) triggerAutoInstallPrompt(); }, 1200);
+  if (deferredInstallPrompt) {
+    triggerAutoInstallPrompt();
     return;
   }
-  setTimeout(function() { if (deferredInstallPrompt) triggerAutoInstallPrompt(); }, 800);
+  if (isIOSDevice()) { showIosInstallModal(); return; }
+  if (/Android/.test(navigator.userAgent || '')) {
+    alert("لتثبيت مِرْقاة، افتح قائمة المتصفح ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».");
+  } else {
+    alert("إذا كان المتصفح يدعم التثبيت، افتح قائمة المتصفح واختر «تثبيت مِرْقاة» أو «إنشاء اختصار».");
+  }
 }
 
 function showIosInstallModal() { showModal("ios-install-modal"); }
 function closeIosInstallModal() { hideModal("ios-install-modal"); }
 
 // ==========================================
-// 27. SERVICE WORKER
+// 26. SERVICE WORKER
 // ==========================================
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -3182,9 +3926,14 @@ if ('serviceWorker' in navigator) {
 }
 
 // ==========================================
-// 28. START
+// 27. START
 // ==========================================
-init();
+initializePersistentStorage().then(function() {
+  init();
+}).catch(function(error) {
+  console.warn('Persistent storage initialization failed; opening with browser storage.', error);
+  init();
+});
 </script>
 </body>
 </html>
