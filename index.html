@@ -4210,7 +4210,14 @@ function closeIosInstallModal() { hideModal("ios-install-modal"); }
 // ==========================================
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('./sw.js').catch(function(e){ console.warn("SW register failed", e); });
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+      .then(function(registration) {
+        // Check for an updated worker whenever the app opens, including installed PWAs.
+        if (registration && typeof registration.update === 'function') {
+          return registration.update().catch(function() {});
+        }
+      })
+      .catch(function(e) { console.warn('SW registration failed', e); });
   });
 }
 
