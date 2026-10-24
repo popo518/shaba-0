@@ -3,22 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover">
-<meta name="theme-color" content="#5a8b78">
+<meta name="theme-color" content="#121417">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="مِرْقاة">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="مِرْقاة">
-<meta name="description" content="مِرْقاة — تطبيق عربي لتنظيم المهام اليومية ومتابعة الإنجاز.">
+<meta name="description" content="مِرْقاة — تطبيق عربي محلي لتنظيم المهام اليومية ومتابعة الإنجاز، مع دليل استخدام ونسخ احتياطي، دون حساب.">
 <title>مِرْقاة</title>
 
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 
 <style>
@@ -82,6 +79,9 @@ body { display: flex; justify-content: center; align-items: stretch; }
 .tut-tooltip .tut-btns { display: flex; gap: 8px; margin-top: 12px; }
 .tut-tooltip .tut-btn { flex: 1; padding: 10px; border-radius: 9px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: transform 0.1s; }
 .tut-tooltip .tut-btn:active { transform: scale(0.95); }
+.tut-tooltip .tut-btn:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+.tut-tooltip .tut-btn.prev { background: var(--surface-soft); color: var(--muted); border: 1px solid var(--border-strong); }
+.tut-tooltip .tut-btn.next { flex: 1.2; }
 .tut-tooltip .tut-btn.next { background: var(--primary); color: #fff; box-shadow: 0 4px 10px rgba(90, 139, 120, 0.3); flex: 2; }
 .tut-tooltip .tut-btn.skip { background: var(--surface-soft); color: var(--muted); border: 1px solid var(--border-strong); }
 
@@ -100,7 +100,7 @@ body { display: flex; justify-content: center; align-items: stretch; }
 .content { flex: 1; min-height: 0; padding: 8px 20px 100px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
 .content::-webkit-scrollbar { display: none; }
 
-#auth-screen { padding: 40px 24px; overflow-y: auto; }
+#auth-screen { display:none !important; padding: 40px 24px; overflow-y: auto; }
 #auth-screen.active { display: flex; flex-direction: column; }
 .auth-box { width: 100%; max-width: 360px; margin: auto; }
 .auth-logo { width: 80px; height: 80px; background: linear-gradient(135deg, #6fa88f 0%, #4a7562 100%); border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #fff; }
@@ -118,7 +118,7 @@ body { display: flex; justify-content: center; align-items: stretch; }
 .guest-btn { width: 100%; padding: 14px; border: 1.5px dashed var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 .guest-note { text-align: center; margin-top: 12px; font-size: 11px; color: var(--faint); line-height: 1.7; }
 .guest-back-btn { display: none; align-items: center; gap: 8px; padding: 12px 14px; background: var(--primary-soft); border: 1px solid var(--border-strong); border-radius: 12px; color: var(--primary); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 22px; width: 100%; text-align: right; }
-.guest-banner { background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 11px; }
+.guest-banner { display:none !important; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 11px; }
 .guest-banner-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .guest-banner-body { flex: 1; min-width: 0; }
 .guest-banner-title { font-size: 12.5px; font-weight: 700; color: #8a5a2c; }
@@ -409,6 +409,131 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
 .days-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
 .day-chip { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-soft); border: 1px solid var(--border-strong); color: var(--muted); font-family: inherit; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .day-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* ── مِرْقاة: الهوية البصرية المحسّنة ── */
+:root {
+  --bg: #f3f6f4;
+  --surface: #ffffff;
+  --surface-soft: #f0f5f2;
+  --surface-warm: #edf6f0;
+  --border: #e1eae4;
+  --border-strong: #cbdcd1;
+  --text: #182b22;
+  --muted: #687a70;
+  --faint: #9aa99f;
+  --primary: #16845b;
+  --primary-dark: #116746;
+  --primary-soft: #e0f3e8;
+  --accent: #d59a52;
+  --accent-soft: #fff2df;
+  --danger: #c64d52;
+  --danger-soft: #ffeded;
+  --radius: 18px;
+  --shadow-sm: 0 3px 10px rgba(27, 66, 45, .045);
+  --shadow-md: 0 8px 24px rgba(27, 66, 45, .08);
+  --shadow-lg: 0 16px 42px rgba(27, 66, 45, .13);
+}
+html.dark-mode {
+  --bg: #101a15;
+  --surface: #18251e;
+  --surface-soft: #202f27;
+  --surface-warm: #1c3025;
+  --border: #2b4034;
+  --border-strong: #3b5747;
+  --text: #e9f3ec;
+  --muted: #a1b5a8;
+  --faint: #71897a;
+  --primary: #67d6a0;
+  --primary-dark: #86e2b3;
+  --primary-soft: #203e2f;
+  --accent: #e9b875;
+  --accent-soft: #3c3020;
+  --danger: #ff8585;
+  --danger-soft: #422629;
+  --shadow-sm: 0 3px 12px rgba(0,0,0,.14);
+  --shadow-md: 0 8px 26px rgba(0,0,0,.22);
+  --shadow-lg: 0 16px 42px rgba(0,0,0,.3);
+}
+html, body { background: var(--bg); color: var(--text); }
+body { background: radial-gradient(ellipse at top, #e8f4ec 0%, var(--bg) 55%); }
+html.dark-mode body { background: radial-gradient(ellipse at top, #1a3023 0%, #101a15 58%); }
+.app { background: linear-gradient(180deg, #f7faf8 0%, #f0f5f1 100%); }
+html.dark-mode .app { background: linear-gradient(180deg, #142119 0%, #101a15 100%); }
+@media (min-width: 600px) {
+  body { padding: 18px 0; }
+  .app { border-radius: 30px; border: 1px solid rgba(255,255,255,.72); box-shadow: 0 28px 80px rgba(24, 62, 41, .18); }
+  html.dark-mode .app { border-color: #2b4034; box-shadow: 0 28px 80px rgba(0,0,0,.38); }
+}
+.header { padding: 18px 20px 14px; }
+.header-logo { width: 44px; height: 44px; border-radius: 15px; background: linear-gradient(145deg, #28a875, #116746); box-shadow: 0 6px 16px rgba(22,132,91,.22); }
+.header-logo svg { width: 24px; height: 24px; }
+#home-username { font-size: 19px !important; letter-spacing: -.35px; }
+#home-greeting { font-size: 12px !important; letter-spacing: .1px; }
+.header-btn, .avatar-btn { transition: transform .18s ease, background .18s ease; }
+.header-btn:active, .avatar-btn:active { transform: scale(.94); }
+.content { padding: 8px 18px 110px; scroll-behavior: smooth; }
+.daily-verse-card { border: 1px solid #d9e9de; background: linear-gradient(135deg, #f4fbf6 0%, #e6f5eb 100%); border-radius: 20px; padding: 18px 17px; box-shadow: var(--shadow-sm); }
+html.dark-mode .daily-verse-card { background: linear-gradient(135deg, #20382a 0%, #1a2b21 100%); border-color: var(--border); }
+.daily-verse-text { font-size: 15px; line-height: 1.9; }
+.add-prominent-btn { border: 0; border-radius: 16px; background: linear-gradient(135deg, #19895f 0%, #116746 100%); color: #fff; padding: 16px; box-shadow: 0 8px 18px rgba(22,132,91,.18); transition: transform .18s ease, box-shadow .18s ease; }
+.add-prominent-btn svg { background: rgba(255,255,255,.16); border-radius: 8px; padding: 2px; }
+.add-prominent-btn:active { transform: scale(.985); box-shadow: 0 4px 10px rgba(22,132,91,.16); }
+.list-grid { gap: 13px; margin-top: 10px; }
+.list-card { border: 1px solid var(--border); border-radius: 21px; padding: 17px 15px 16px; gap: 13px; box-shadow: var(--shadow-sm); background: var(--surface); transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+.list-card:active { transform: translateY(1px) scale(.985); box-shadow: var(--shadow-md); }
+.list-icon { width: 46px; height: 46px; border-radius: 16px; box-shadow: 0 5px 12px rgba(0,0,0,.08); }
+.list-name { font-size: 15px; line-height: 1.5; }
+.list-count { font-size: 11.5px; }
+.list-bar { height: 6px; border-radius: 99px; margin-top: 9px; }
+.list-bar-fill { border-radius: 99px; }
+.sections-list { gap: 12px; }
+.section-card { border-radius: 19px; padding: 15px; box-shadow: var(--shadow-sm); border-color: var(--border); transition: transform .18s ease, box-shadow .18s ease; }
+.section-card:active { transform: scale(.99); box-shadow: var(--shadow-md); }
+.section-card .sec-icon { border-radius: 15px; width: 48px; height: 48px; }
+.task { border-radius: 19px; padding: 15px 14px; margin-bottom: 11px; box-shadow: var(--shadow-sm); border-color: var(--border); transition: box-shadow .18s ease, transform .18s ease; }
+.task.done { opacity: .86; }
+.task-title { font-size: 14.5px; line-height: 1.65; }
+.check { border-radius: 9px; transition: background .18s ease, transform .18s ease; }
+.check:active { transform: scale(.9); }
+.task-action-btn { width: 34px; height: 34px; border-radius: 11px; background: var(--surface-soft); border-color: transparent; }
+.task-action-btn:active { transform: scale(.92); }
+.task-times { gap: 7px; }
+.time-badge { border-radius: 8px; background: var(--surface-soft); padding: 6px 9px; }
+.cat-hadith-banner { border-radius: 17px; padding: 14px; background: var(--surface-warm); border-color: var(--border); }
+.prayer-widget { border-radius: 20px; padding: 18px; background: linear-gradient(130deg, #19895f 0%, #104d37 100%); box-shadow: 0 10px 24px rgba(17,103,70,.2); }
+.prayer-next { border-radius: 11px; background: rgba(255,255,255,.17); padding: 8px 12px; }
+.streak-widget { border: 1px solid #f0dfbd; background: linear-gradient(120deg, #fff6e7 0%, #ffefd8 100%); border-radius: 16px; color: #805a27; padding: 12px 14px; }
+html.dark-mode .streak-widget { background: var(--accent-soft); border-color: var(--border); color: var(--text); }
+.points-badge { border: 0; border-radius: 99px; padding: 6px 10px; }
+.bottom-nav { position: relative; z-index: 20; margin: 0 12px 10px; padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); border: 1px solid rgba(214,229,218,.95); border-radius: 22px; background: rgba(255,255,255,.92); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 8px 28px rgba(27,66,45,.10); gap: 4px; }
+html.dark-mode .bottom-nav { background: rgba(24,37,30,.94); border-color: var(--border); }
+.nav-item { flex: 1; border-radius: 15px; padding: 8px 5px; gap: 5px; color: var(--faint); font-size: 10.5px; transition: color .18s ease, background .18s ease, transform .18s ease; }
+.nav-item svg { width: 21px; height: 21px; }
+.nav-item.active { color: var(--primary); background: var(--primary-soft); font-weight: 800; }
+.nav-item:active { transform: scale(.95); }
+.modal { border-radius: 26px 26px 0 0; box-shadow: 0 -12px 40px rgba(0,0,0,.12); }
+.modal-handle { width: 44px; height: 5px; border-radius: 99px; }
+.modal-header { padding: 12px 20px 16px; }
+.modal-header h2 { font-size: 18px; letter-spacing: -.2px; }
+.form-input, .form-field input, .form-field select, .form-field textarea { border-radius: 13px; }
+button { touch-action: manipulation; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgba(22,132,91,.28); outline-offset: 2px; }
+.empty { padding: 44px 24px; }
+.empty h3 { font-size: 17px; }
+.dhikr-card { border-radius: 17px; padding: 16px; background: linear-gradient(135deg, var(--primary-soft), var(--surface)); }
+.dhikr-footer span { background: rgba(22,132,91,.07); }
+html.dark-mode .dhikr-footer span { background: rgba(103,214,160,.08); }
+@media (max-width: 360px) {
+  .content { padding-left: 13px; padding-right: 13px; }
+  .list-grid { gap: 9px; }
+  .list-card { padding: 14px 12px; }
+  .bottom-nav { margin-left: 8px; margin-right: 8px; }
+  .nav-item { font-size: 9.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
 </style>
 </head>
 <body>
@@ -424,28 +549,7 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
 
   <div id="tutorial-overlay"></div>
 
-  <div class="screen" id="auth-screen">
-    <div class="auth-box">
-      <button class="guest-back-btn" id="guest-back-btn" onclick="cancelGuestUpgrade()"><span>العودة للتطبيق</span></button>
-      <div class="auth-logo"><svg viewBox="0 0 64 64"><path d="M18 40 L32 20 L46 40" stroke="#fff" stroke-width="3.5" fill="none"/><circle cx="32" cy="46" r="2.5" fill="#fff"/></svg></div>
-      <h1>مِرْقاة</h1>
-      <p class="tagline">نظّم إنجازك، دقيقة بدقيقة</p>
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">دخول</button>
-        <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">إنشاء حساب</button>
-      </div>
-      <form class="auth-form" id="auth-form" novalidate>
-        <input type="text" class="auth-input" id="auth-username" placeholder="اسم المستخدم" autocomplete="username">
-        <input type="password" class="auth-input" id="auth-password" placeholder="كلمة المرور" autocomplete="current-password">
-        <input type="text" class="auth-input" id="auth-displayname" placeholder="اسمك الظاهر (اختياري)" style="display:none">
-        <div id="auth-error" style="color:var(--danger); font-size:12px; display:none; text-align:center;"></div>
-        <button type="button" onclick="handleAuth(event)" class="auth-btn" id="auth-submit">دخول</button>
-      </form>
-      <div style="text-align:center; margin:18px 0; color:var(--faint); font-size:12px;">أو</div>
-      <button type="button" class="guest-btn" onclick="handleGuestLogin()">متابعة كضيف (بدون حساب)</button>
-      <div class="guest-note" id="guest-note">الحساب السحابي يحفظ بياناتك ويفتحها على أي جهاز<br>الضيف يحفظ محلياً على هذا الجهاز فقط</div>
-    </div>
-  </div>
+  <!-- تسجيل الدخول غير مطلوب: مِرْقاة يعمل محليًا على هذا الجهاز. -->
 
   <div class="screen" id="home-screen">
     <div class="header">
@@ -457,12 +561,6 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
       <button class="avatar-btn" onclick="goToSettings()" id="home-avatar">?</button>
     </div>
     <div class="content">
-      <div class="guest-banner" id="guest-banner" style="display:none;">
-        <div class="guest-banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg></div>
-        <div class="guest-banner-body"><div class="guest-banner-title">أنت تستخدم حساب ضيف</div><div class="guest-banner-desc">أنشئ حساباً سحابياً لفتح بياناتك على أي جهاز</div></div>
-        <button class="guest-banner-btn" onclick="showSignupForGuest()">سجّل الآن</button>
-      </div>
-
       <div class="prayer-widget" id="prayer-widget" style="display:none;">
         <div class="prayer-info">
           <div class="prayer-title">الصلاة القادمة</div>
@@ -650,13 +748,13 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
         </div>
         <div id="custom-days-container" style="display:none; margin-top:10px;">
           <div class="days-chips" id="days-chips-list">
-            <button class="day-chip" data-day="0" onclick="toggleDay(this)">أحد</button>
-            <button class="day-chip" data-day="1" onclick="toggleDay(this)">إثنين</button>
-            <button class="day-chip" data-day="2" onclick="toggleDay(this)">ثلاثاء</button>
-            <button class="day-chip" data-day="3" onclick="toggleDay(this)">أربعاء</button>
-            <button class="day-chip" data-day="4" onclick="toggleDay(this)">خميس</button>
-            <button class="day-chip" data-day="5" onclick="toggleDay(this)">جمعة</button>
-            <button class="day-chip" data-day="6" onclick="toggleDay(this)">سبت</button>
+            <button type="button" class="day-chip" aria-pressed="false" data-day="0" onclick="toggleDay(this)">أحد</button>
+            <button type="button" class="day-chip" aria-pressed="false" data-day="1" onclick="toggleDay(this)">إثنين</button>
+            <button type="button" class="day-chip" aria-pressed="false" data-day="2" onclick="toggleDay(this)">ثلاثاء</button>
+            <button type="button" class="day-chip" aria-pressed="false" data-day="3" onclick="toggleDay(this)">أربعاء</button>
+            <button type="button" class="day-chip" aria-pressed="false" data-day="4" onclick="toggleDay(this)">خميس</button>
+            <button type="button" class="day-chip" aria-pressed="false" data-day="5" onclick="toggleDay(this)">جمعة</button>
+            <button type="button" class="day-chip" aria-pressed="false" data-day="6" onclick="toggleDay(this)">سبت</button>
           </div>
         </div>
       </div>
@@ -794,6 +892,36 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
     </div>
   </div>
 
+  <div class="modal" id="usage-guide-modal" style="z-index: 120;">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2>دليل استخدام مِرْقاة</h2>
+      <button class="modal-close" onclick="closeUsageGuide()" aria-label="إغلاق الدليل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="usage-guide-content" style="line-height:1.8;">
+      <div class="form-field">
+        <label class="form-label" for="usage-guide-topic">اختر موضوع الدليل</label>
+        <select class="form-input" id="usage-guide-topic" onchange="selectUsageGuideTopic(this.value)">
+          <option value="0">نظرة عامة</option>
+          <option value="1">الفئات والأصناف</option>
+          <option value="2">إضافة مهمة وتعديلها</option>
+          <option value="3">التكرار واختيار الأيام</option>
+          <option value="4">إنجاز المهام وإعادة ضبطها</option>
+          <option value="5">السجل والملاحظات</option>
+          <option value="6">المسبحة والأوسمة والتركيز</option>
+          <option value="7">النسخ الاحتياطي والخصوصية</option>
+          <option value="8">تثبيت التطبيق</option>
+        </select>
+      </div>
+      <div id="usage-guide-page" aria-live="polite"></div>
+      <div id="usage-guide-progress" style="font-size:12px;color:var(--muted);text-align:center;padding-top:12px;" aria-live="polite"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" id="usage-guide-prev" onclick="usageGuidePrevious()" style="flex:1;" disabled>السابق</button>
+      <button class="btn btn-save" id="usage-guide-next" onclick="usageGuideNext()" style="flex:1;">التالي</button>
+    </div>
+  </div>
+
   <div class="modal" id="ios-install-modal" style="z-index: 115;">
     <div class="modal-handle"></div>
     <div class="modal-header">
@@ -836,27 +964,10 @@ html.dark-mode .tasbih-circle { background: var(--surface-soft); border-color: v
 
 <script>
 // ==========================================
-// 0. FIREBASE CONFIG
-// Security note: enforce per-user Firestore Security Rules in the Firebase console; client code cannot provide that protection by itself.
+// 0. LOCAL-ONLY MODE
+// لا حسابات ولا اتصال أو مزامنة مع Firebase. بيانات كل جهاز مستقلة.
 // ==========================================
-var firebaseConfig = {
-  apiKey: "AIzaSyAAfQ-rbWNE0rConbhClrZBIq9xL0EpcnQ",
-  authDomain: "mirqat-app.firebaseapp.com",
-  projectId: "mirqat-app",
-  storageBucket: "mirqat-app.firebasestorage.app",
-  messagingSenderId: "790625567334",
-  appId: "1:790625567334:web:27a95908ec0835af6c63a7"
-};
-
 var CLOUD_ENABLED = false;
-try {
-  if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE_") !== 0 &&
-      typeof firebase !== 'undefined' && typeof firebase.initializeApp === 'function' &&
-      typeof firebase.auth === 'function' && typeof firebase.firestore === 'function') {
-    if (!firebase.apps || firebase.apps.length === 0) firebase.initializeApp(firebaseConfig);
-    CLOUD_ENABLED = !!(firebase.auth && firebase.firestore);
-  }
-} catch (e) { CLOUD_ENABLED = false; console.warn("Firebase unavailable; local mode will be used.", e); }
 
 // ==========================================
 // 1. STORAGE & THEME
@@ -1133,7 +1244,7 @@ function scheduleCloudSave() {
       console.error("Cloud save failed", e);
       if (!cloudSaveErrorShown) {
         cloudSaveErrorShown = true;
-        alert("لم يتم حفظ التغييرات في الحساب السحابي. بقيت التغييرات ظاهرة مؤقتًا فقط؛ تحقّق من الإنترنت ثم حاول مجددًا. التفاصيل: " + (e && e.message ? e.message : "خطأ غير معروف"));
+        alert("تعذّر حفظ البيانات محليًا. تأكد من توفر مساحة في الجهاز. التفاصيل: " + (e && e.message ? e.message : "خطأ غير معروف"));
       }
     });
   }, 500);
@@ -1291,7 +1402,7 @@ function playSound(type) {
 function vibrate(ms) { var s = loadSettings(); if (!s.vibrate) return; if (navigator.vibrate) navigator.vibrate(ms || 12); }
 
 function loadSettings() {
-  var def = { sounds: true, vibrate: true, darkMode: false, tutorialDone: false };
+  var def = { sounds: true, vibrate: true, darkMode: true, themePreferenceSet: false, tutorialDone: false };
   var s = loadUserData("settings", {}) || {};
   for (var k in def) if (s[k] === undefined) s[k] = def[k];
   return s;
@@ -1301,6 +1412,8 @@ function applyTheme() {
   var s = loadSettings();
   if (s.darkMode) document.documentElement.classList.add("dark-mode");
   else document.documentElement.classList.remove("dark-mode");
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute("content", s.darkMode ? "#121417" : "#5a8b78");
 }
 
 // ==========================================
@@ -1385,6 +1498,7 @@ function switchAuthTab(mode) {
 function showAuthError(msg) { var e = document.getElementById("auth-error"); e.textContent = msg; e.style.display = "block"; }
 
 function handleAuth(ev) {
+  alert("مِرْقاة يعمل دون حساب أو كلمة مرور. بياناتك محفوظة على هذا الجهاز فقط."); return;
   if (ev) ev.preventDefault();
   var username = document.getElementById("auth-username").value.trim();
   var password = document.getElementById("auth-password").value;
@@ -1501,9 +1615,6 @@ function handleAuth(ev) {
     }
   }
 }
-document.getElementById("auth-username").addEventListener("keypress", function(e){ if(e.key==="Enter") handleAuth(e); });
-document.getElementById("auth-password").addEventListener("keypress", function(e){ if(e.key==="Enter") handleAuth(e); });
-
 function handleGuestLogin() {
   if (getCurrentUser() && !isGuest()) return;
   var gid = "guest_" + Date.now();
@@ -1513,35 +1624,7 @@ function handleGuestLogin() {
   playSound("add"); vibrate(15);
   enterApp();
 }
-function showSignupForGuest() { document.getElementById("guest-back-btn").style.display = "flex"; switchAuthTab("signup"); showScreen("auth"); }
-function cancelGuestUpgrade() { document.getElementById("guest-back-btn").style.display = "none"; goHome(); }
-function logout() {
-  if (!confirm("تسجيل الخروج؟")) return;
-  if (CLOUD_ENABLED && cloudUser) {
-    var uidToSignOut = cloudUser.uid;
-    if (cloudUnsubscribe) { try { cloudUnsubscribe(); } catch (e) {} cloudUnsubscribe = null; }
-    if (cloudSaveTimer) { clearTimeout(cloudSaveTimer); cloudSaveTimer = null; }
-    writeCloudData(uidToSignOut).catch(function(e) { console.warn("Final cloud save failed", e); }).then(function() {
-      return firebase.auth().signOut();
-    }).then(function() {
-      cloudUser = null;
-      cloudData = hydrateCloudData({});
-      cloudTaskChunksActive = false;
-      setCurrentUser(null);
-      document.getElementById("auth-username").value = "";
-      document.getElementById("auth-password").value = "";
-      showScreen("auth");
-    }).catch(function(e) {
-      console.warn("Sign out failed", e);
-      showAuthError("تعذّر تسجيل الخروج من الحساب السحابي. تحقق من الاتصال وحاول مجدداً.");
-    });
-  } else {
-    setCurrentUser(null);
-    document.getElementById("auth-username").value = "";
-    document.getElementById("auth-password").value = "";
-    showScreen("auth");
-  }
-}
+function showSignupForGuest() { alert("مِرْقاة يعمل دون حساب؛ بياناتك محفوظة على هذا الجهاز فقط."); }
 
 // ==========================================
 // 5. PRESETS
@@ -1630,6 +1713,7 @@ var editorGroups = [];
 var historyState = { view: "days", mode: 'daily', selectedDate: null, selectedCatId: null, currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear() };
 var tutStep = 0;
 var tutorialActive = false;
+var tutorialRenderTimer = null;
 var selectedPresetCat = null;
 var selectedCatColor = null;
 var editingDayNoteDate = null;
@@ -1643,42 +1727,37 @@ var currentPomodoroTask = null;
 // 7. INIT
 // ==========================================
 function init() {
-  applyTheme();
-  if (CLOUD_ENABLED) {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        if (cloudUser && cloudUser.uid !== user.uid) stopCloudSync();
-        cloudUser = user;
-        firebase.firestore().collection('users').doc(user.uid).get()
-          .then(function(doc) {
-            var raw = doc && doc.exists ? doc.data() : {};
-            return loadCloudTasks(user.uid, raw.tasks, raw.tasksStorageVersion).then(function(taskResult) {
-              cloudTaskChunksActive = taskResult.hasChunks;
-              cloudData = hydrateCloudData(raw, (user.email || "").split("@")[0], taskResult.tasks);
-              cloudData.tasks = taskResult.tasks;
-              applyTheme();
-              enterApp();
-              startCloudSync();
-              // Migrate legacy task arrays out of the parent document.
-              if (!taskResult.hasChunks && Array.isArray(raw.tasks) && raw.tasks.length) scheduleCloudSave();
-            });
-          })
-          .catch(function(err) {
-            console.warn("Unable to load cloud data", err);
-            showAuthError("تعذّر تحميل بياناتك السحابية. تحقق من الاتصال وحاول مجدداً.");
-            showScreen("auth");
-          });
-      } else {
-        stopCloudSync();
-        cloudUser = null;
-        var local = SafeStorage.getItem("mrq_currentUser");
-        if (local && isGuestUser(local)) enterApp(); else showScreen("auth");
-      }
-    });
-  } else {
-    var user = SafeStorage.getItem("mrq_currentUser");
-    if (user && (isGuestUser(user) || getUsers()[user])) enterApp(); else showScreen("auth");
+  // Apply the requested dark-by-default theme once for existing installations.
+  // After the user changes the theme manually, respect that preference on later launches.
+  // Keep an existing local profile so data already stored under its key remains available.
+  // On a fresh device, create one stable device-local profile; it never syncs to other devices.
+  var current = SafeStorage.getItem("mrq_currentUser");
+  var users = getUsers();
+  if (!current) {
+    current = "guest_device";
+    setCurrentUser(current);
   }
+  if (!users[current]) {
+    users[current] = { displayName: "هذا الجهاز", isGuest: true, createdAt: Date.now(), localOnly: true };
+    saveUsers(users);
+  } else {
+    users[current].localOnly = true;
+    if (!users[current].displayName) users[current].displayName = "هذا الجهاز";
+    saveUsers(users);
+  }
+  var themeSettings = loadUserData("settings", {}) || {};
+  if (!themeSettings.themePreferenceSet) {
+    themeSettings.darkMode = true;
+    themeSettings.themePreferenceSet = true;
+    saveUserData("settings", themeSettings);
+  }
+  applyTheme();
+  // Prevent account/cloud UI from resurfacing in old markup paths.
+  var auth = document.getElementById("auth-screen");
+  if (auth) auth.classList.remove("active");
+  var guestBanner = document.getElementById("guest-banner");
+  if (guestBanner) guestBanner.style.display = "none";
+  enterApp();
   setupNotifications();
 }
 
@@ -1735,11 +1814,13 @@ function enterApp() {
       avatarLetter = displayName.charAt(0).toUpperCase();
     } else {
       var u = SafeStorage.getItem("mrq_currentUser");
-      var users = getUsers(); var info = users[u];
-      if (!info) { setCurrentUser(null); showScreen("auth"); return; }
-      displayName = info.displayName || u;
-      avatarLetter = isGuestUser(u) ? "ض" : displayName.charAt(0).toUpperCase();
-      isG = isGuestUser(u);
+      var users = getUsers(); var info = users[u] || { displayName: "هذا الجهاز", isGuest: true, localOnly: true, createdAt: Date.now() };
+      info.localOnly = true;
+      if (!info.displayName) info.displayName = "هذا الجهاز";
+      users[u] = info; saveUsers(users);
+      displayName = "هذا الجهاز";
+      avatarLetter = "م";
+      isG = false;
     }
 
     currentCategories = loadUserData("categories", null);
@@ -1770,7 +1851,8 @@ function enterApp() {
     var ae = document.getElementById("home-avatar");
     ae.textContent = avatarLetter;
     ae.className = "avatar-btn" + (isG ? " guest-avatar" : "") + (isCloudUser() ? " cloud-avatar" : "");
-    document.getElementById("guest-banner").style.display = isG ? "flex" : "none";
+    var guestBanner = document.getElementById("guest-banner");
+    if (guestBanner) guestBanner.style.display = "none";
 
     var dhikrEl = document.getElementById("home-dhikr");
     if (dhikrEl) dhikrEl.innerHTML = "<span>" + getRandomDhikr() + "</span>";
@@ -1807,23 +1889,41 @@ function enterApp() {
 // ==========================================
 function migrateToSections() {
   var changed = false;
-  currentCategories.forEach(function(cat) { if (!cat.sections) { cat.sections = []; changed = true; } });
+  currentCategories.forEach(function(cat) {
+    if (!Array.isArray(cat.sections)) { cat.sections = []; changed = true; }
+    if (cat.id === "religion" || cat.name === "دينية") {
+      // Rename the legacy section in place so existing religious tasks keep their section ID.
+      var genericSections = cat.sections.filter(function(sec) { return sec && sec.name === "مهام عامة"; });
+      genericSections.forEach(function(oldSection) {
+        var target = cat.sections.filter(function(sec) { return sec && sec.id !== oldSection.id && sec.name === "صلاة مستحبة"; })[0];
+        if (target) {
+          currentTasks.forEach(function(task) {
+            if (task && task.cat === cat.id && task.section === oldSection.id) task.section = target.id;
+          });
+          cat.sections = cat.sections.filter(function(sec) { return sec.id !== oldSection.id; });
+        } else {
+          oldSection.name = "صلاة مستحبة";
+        }
+        changed = true;
+      });
+    }
+  });
+
   var byCat = {};
   currentTasks.forEach(function(t) {
+    if (!t || typeof t !== "object") return;
     if (!t.section) {
       if (!byCat[t.cat]) byCat[t.cat] = [];
       byCat[t.cat].push(t);
     }
   });
-  
   for (var catId in byCat) {
-    var cat = currentCategories.filter(function(c){ return c.id === catId; })[0];
+    var cat = currentCategories.filter(function(c) { return c.id === catId; })[0];
     if (!cat) continue;
-    var secName = "مهام عامة";
-    if (cat.id === "religion") secName = "مهام عامة";
-    var sec = cat.sections.filter(function(s){ return s.name === secName; })[0];
+    var secName = (cat.id === "religion" || cat.name === "دينية") ? "صلاة مستحبة" : "مهام عامة";
+    var sec = cat.sections.filter(function(section) { return section && section.name === secName; })[0];
     if (!sec) { sec = { id: uid("sec_"), name: secName }; cat.sections.push(sec); changed = true; }
-    byCat[catId].forEach(function(t){ t.section = sec.id; changed = true; });
+    byCat[catId].forEach(function(t) { t.section = sec.id; changed = true; });
   }
   if (changed) {
     saveUserData("categories", currentCategories);
@@ -1832,141 +1932,110 @@ function migrateToSections() {
 }
 
 function injectDefaultTemplates() {
-  if (loadUserData("defaultsInjected_v2", false)) return;
+  // v3 defaults: prefill religious tasks only. All other main categories start empty.
+  if (loadUserData("defaultsInjected_v3", false)) return;
 
-  var defaultData = [
-    {
-      id: "religion", name: "دينية", icon: "religion", color: "#c9a227",
-      sections: [
-        { name: "الصلاة", tasks: [
-          { title: "صلاة الفجر", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] },
-          { title: "صلاة الظهر", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] },
-          { title: "صلاة العصر", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] },
-          { title: "صلاة المغرب", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] },
-          { title: "صلاة العشاء", options: [{title: "أين صليت؟", opts: ["في المسجد","في البيت","جماعة"]}, {title: "السنة", opts: ["صليت السنة","ما صليتها"]}] }
-        ]},
-        { name: "مهام عامة", tasks: [
-          { title: "صلاة الضحى", options: [{title: "عدد الركعات", opts: ["2", "4"]}] },
-          { title: "صلاة الوتر", options: [{title: "ركعات", opts: ["1", "3"]}] },
-          { title: "قيام الليل", options: [{title: "ركعات", opts: ["2", "4"]}] }
-        ]},
-        { name: "الأذكار", tasks: [
-          { title: "اذكار الصباح" },
-          { title: "اذكار المساء" }
-        ]},
-        { name: "قراءة القرآن", tasks: [
-          { title: "قراءة", options: [{title: "عدد الصفحات", opts: ["1", "2", "3", "4"]}] },
-          { title: "حفظ", options: [{title: "عدد الصفحات", opts: ["1", "2", "3"]}] },
-          { title: "مراجعة", options: [{title: "عدد الصفحات", opts: ["1", "2"]}] }
-        ]}
-      ]
+  var legacyNonReligiousDefaults = {
+    study: {
+      "فيزياء": ["دراسة", "مراجعة"],
+      "انجليزي": ["دراسة", "مراجعة"],
+      "رياضيات": ["دراسة", "مراجعة"],
+      "علوم ارض": ["دراسة", "مراجعة"]
     },
-    {
-      id: "study", name: "دراسية", icon: "study", color: "#a36aa8",
-      sections: [
-        { name: "فيزياء", tasks: [
-          { title: "دراسة", options: [{title: "عدد الحصص", opts: ["1", "2", "3"]}] },
-          { title: "مراجعة" }
-        ]},
-        { name: "انجليزي", tasks: [
-          { title: "دراسة", options: [{title: "عدد الحصص", opts: ["1", "2", "3"]}] },
-          { title: "مراجعة" }
-        ]},
-        { name: "رياضيات", tasks: [
-          { title: "دراسة", options: [{title: "عدد الحصص", opts: ["1", "2", "3"]}] },
-          { title: "مراجعة" }
-        ]},
-        { name: "علوم ارض", tasks: [
-          { title: "دراسة", options: [{title: "عدد الدروس", opts: ["1", "2"]}] },
-          { title: "مراجعة", options: [{title: "عدد الدروس", opts: ["1", "2", "3", "4"]}] }
-        ]}
-      ]
+    sport: {
+      "تمرين": ["معدة", "بلانك", "بوش اب"],
+      "القفز بالحيلة": ["تمرين الحبلة"]
     },
-    {
-      id: "sport", name: "رياضة", icon: "sport", color: "#5a8b78",
-      sections: [
-        { name: "تمرين", tasks: [
-          { title: "معدة", options: [{title: "عدات", opts: ["5", "10", "15"]}] },
-          { title: "بلانك", options: [{title: "ثواني", opts: ["10", "20", "30"]}] },
-          { title: "بوش اب", options: [{title: "عدات", opts: ["3", "5", "7", "10"]}] }
-        ]},
-        { name: "القفز بالحيلة", tasks: [
-          { title: "تمرين الحبلة", options: [{title: "عدات", opts: ["100", "200", "300", "400"]}] }
-        ]}
-      ]
-    },
-    {
-      id: "sleep", name: "نوم", icon: "sleep", color: "#6a7ab8",
-      sections: [
-        { name: "الاستيقاظ", tasks: [
-          { title: "الاستيقاظ", options: [{title: "الوقت", opts: ["5", "5.30", "6"]}] }
-        ]},
-        { name: "النوم", tasks: [
-          { title: "النوم", options: [{title: "الوقت", opts: ["9", "10", "11"]}] }
-        ]}
-      ]
+    sleep: {
+      "الاستيقاظ": ["الاستيقاظ"],
+      "النوم": ["النوم"]
     }
+  };
+
+  // Remove only recognisable entries from the previous built-in templates. Tasks created
+  // by the user with different names are kept, along with any sections that still contain them.
+  currentTasks = currentTasks.filter(function(task) {
+    if (!task || task.cat === "religion") return true;
+    var cat = currentCategories.filter(function(c) { return c.id === task.cat; })[0];
+    var catDefaults = legacyNonReligiousDefaults[task.cat];
+    if (!cat || !catDefaults || !Array.isArray(cat.sections)) return true;
+    var sec = cat.sections.filter(function(section) { return section && section.id === task.section; })[0];
+    if (!sec || !Object.prototype.hasOwnProperty.call(catDefaults, sec.name)) return true;
+    return catDefaults[sec.name].indexOf(String(task.title || "")) === -1;
+  });
+
+  // Remove now-empty sections that belonged to the previous built-in study/sport/sleep templates.
+  currentCategories.forEach(function(cat) {
+    var templateSections = legacyNonReligiousDefaults[cat.id];
+    if (!templateSections || !Array.isArray(cat.sections)) return;
+    cat.sections = cat.sections.filter(function(sec) {
+      var hasTasks = currentTasks.some(function(task) { return task && task.cat === cat.id && task.section === sec.id && !task.archived; });
+      return hasTasks || !Object.prototype.hasOwnProperty.call(templateSections, sec.name);
+    });
+  });
+
+  var religion = currentCategories.filter(function(c) { return c.id === "religion" || c.name === "دينية"; })[0];
+  if (!religion) {
+    religion = { id: "religion", name: "دينية", icon: "religion", color: "#c9a227", sections: [], createdAt: Date.now() };
+    currentCategories.push(religion);
+  }
+  religion.id = religion.id || "religion";
+  religion.name = "دينية";
+  religion.icon = religion.icon || "religion";
+  religion.color = religion.color || "#c9a227";
+  if (!Array.isArray(religion.sections)) religion.sections = [];
+
+  var religiousDefaults = [
+    { name: "الصلاة", tasks: [
+      { title: "صلاة الفجر", options: [{ title: "أين صليت؟", opts: ["في المسجد", "في البيت", "جماعة"] }, { title: "السنة", opts: ["صليت السنة", "ما صليتها"] }] },
+      { title: "صلاة الظهر", options: [{ title: "أين صليت؟", opts: ["في المسجد", "في البيت", "جماعة"] }, { title: "السنة", opts: ["صليت السنة", "ما صليتها"] }] },
+      { title: "صلاة العصر", options: [{ title: "أين صليت؟", opts: ["في المسجد", "في البيت", "جماعة"] }, { title: "السنة", opts: ["صليت السنة", "ما صليتها"] }] },
+      { title: "صلاة المغرب", options: [{ title: "أين صليت؟", opts: ["في المسجد", "في البيت", "جماعة"] }, { title: "السنة", opts: ["صليت السنة", "ما صليتها"] }] },
+      { title: "صلاة العشاء", options: [{ title: "أين صليت؟", opts: ["في المسجد", "في البيت", "جماعة"] }, { title: "السنة", opts: ["صليت السنة", "ما صليتها"] }] }
+    ] },
+    { name: "صلاة مستحبة", tasks: [
+      { title: "صلاة الضحى", options: [{ title: "عدد الركعات", opts: ["2", "4"] }] },
+      { title: "صلاة الوتر", options: [{ title: "ركعات", opts: ["1", "3"] }] },
+      { title: "قيام الليل", options: [{ title: "ركعات", opts: ["2", "4"] }] }
+    ] },
+    { name: "الأذكار", tasks: [ { title: "أذكار الصباح" }, { title: "أذكار المساء" } ] },
+    { name: "قراءة القرآن", tasks: [
+      { title: "قراءة", options: [{ title: "عدد الصفحات", opts: ["1", "2", "3", "4"] }] },
+      { title: "حفظ", options: [{ title: "عدد الصفحات", opts: ["1", "2", "3"] }] },
+      { title: "مراجعة", options: [{ title: "عدد الصفحات", opts: ["1", "2"] }] }
+    ] }
   ];
 
-  var changed = false;
-  var now = Date.now();
-  var idCounter = 0;
-
-  defaultData.forEach(function(catData) {
-    var cat = currentCategories.filter(function(c){ return c.id === catData.id || c.name === catData.name; })[0];
-    if (!cat) {
-      cat = { id: catData.id, name: catData.name, icon: catData.icon, color: catData.color, sections: [], createdAt: now };
-      currentCategories.push(cat);
-      changed = true;
+  var now = Date.now(), idCounter = 0, changed = true;
+  religiousDefaults.forEach(function(sectionData) {
+    var section = religion.sections.filter(function(sec) { return sec && sec.name === sectionData.name; })[0];
+    if (!section) {
+      section = { id: uid("sec_"), name: sectionData.name };
+      religion.sections.push(section);
     }
-
-    catData.sections.forEach(function(secData) {
-      var sec = cat.sections.filter(function(s){ return s.name === secData.name; })[0];
-      if (!sec) {
-        sec = { id: uid("sec_"), name: secData.name };
-        cat.sections.push(sec);
-        changed = true;
-      }
-
-      secData.tasks.forEach(function(taskData) {
-        var existingTask = currentTasks.filter(function(t){ return t.cat === cat.id && t.section === sec.id && t.title === taskData.title; })[0];
-        if (!existingTask) {
-          var optionGroups = [];
-          if (taskData.options) {
-            taskData.options.forEach(function(opt) {
-              optionGroups.push({ title: opt.title, options: opt.opts, selected: null });
-            });
-          }
-          currentTasks.push({
-            id: now + (idCounter++),
-            title: taskData.title,
-            cat: cat.id,
-            section: sec.id,
-            freq: "daily",
-            times: [],
-            notes: "",
-            hasQty: false,
-            target: 0,
-            unit: "",
-            current: 0,
-            done: false,
-            optionGroups: optionGroups,
-            completedAt: null,
-            lastReset: getTodayStr(),
-            createdAt: now,
-            priority: "medium"
-          });
-          changed = true;
-        }
+    sectionData.tasks.forEach(function(taskData) {
+      var existing = currentTasks.filter(function(task) {
+        return task && task.cat === religion.id && task.section === section.id && task.title === taskData.title;
+      })[0];
+      if (existing) return;
+      var optionGroups = [];
+      (taskData.options || []).forEach(function(opt) {
+        optionGroups.push({ title: opt.title, options: opt.opts.slice(), selected: null });
+      });
+      currentTasks.push({
+        id: now + (idCounter++),
+        title: taskData.title, cat: religion.id, section: section.id,
+        freq: "daily", times: [], notes: "", time: "", priority: "medium", order: currentTasks.length,
+        hasQty: false, target: 0, unit: "", current: 0, done: false, optionGroups: optionGroups,
+        completedAt: null, lastReset: getTodayStr(), createdAt: now, days: [], archived: false, lastRewardDate: ""
       });
     });
   });
 
-  if (changed) {
-    saveUserData("categories", currentCategories);
-    saveUserData("tasks", currentTasks);
-  }
-  saveUserData("defaultsInjected_v2", true);
+  // The categories remain available, but only the religious category receives starter tasks.
+  saveUserData("categories", currentCategories);
+  saveUserData("tasks", currentTasks);
+  saveUserData("defaultsInjected_v3", true);
 }
 
 // ==========================================
@@ -2350,7 +2419,7 @@ var TUT_STEPS = [
   },
   {
     title: "إضافة قائمة جديدة",
-    text: "اضغط هنا لإنشاء قائمة جديدة (مثل: دينية، رياضة، عمل). ستختار من قوالب جاهزة أو تصنع قائمتك بنفسك.",
+    text: "اضغط هنا لإنشاء قائمة جديدة. تأتي الفئات الأخرى فارغة حتى تضيف مهامك بنفسك، بينما تحتوي الفئة الدينية على مهام افتراضية قابلة للتعديل.",
     selector: "#btn-add-cat", position: "bottom"
   },
   {
@@ -2371,9 +2440,9 @@ var TUT_STEPS = [
   },
   {
     title: "المهام داخل الصنف",
-    text: "كل مهمة تعرض: مربع الإنجاز، شريط الأولوية، الخيارات إن وُجدت، أوقات التذكير، وشريط التقدم. اسحب من ⋮⋮ لإعادة الترتيب.",
+    text: "اخترنا لك أول فئة تحتوي مهامًا ثم فتحنا أول صنف فيها. يمكنك تعليم المهمة كمكتملة، تعديلها، أو سحبها لتغيير ترتيبها.",
     selector: "#tasks-list .task", fallbackSelector: "#tasks-list",
-    position: "bottom", action: "openFirstSection"
+    position: "bottom", action: "openFirstCategoryAndSection"
   },
   {
     title: "مؤقت التركيز والتكرار ⏳",
@@ -2410,10 +2479,22 @@ function runTutAction(name) {
         if (sec) openSection(sec.id);
       }
     }
+    else if (name === "openFirstCategoryAndSection") {
+      var firstCat = findFirstCategoryWithTasks();
+      if (firstCat) {
+        openCategory(firstCat.id);
+        var firstSection = findFirstSectionWithTasks(firstCat);
+        if (firstSection) openSection(firstSection.id);
+        else goHome();
+      } else {
+        goHome();
+      }
+    }
   } catch (e) { console.warn("Tutorial action failed:", e); }
 }
 
 function startTutorial() {
+  if (tutorialRenderTimer) { clearTimeout(tutorialRenderTimer); tutorialRenderTimer = null; }
   if (tutorialActive) return;
   tutorialActive = true;
   tutStep = 0;
@@ -2424,38 +2505,37 @@ function startTutorial() {
 }
 
 function renderTutStep() {
+  if (tutorialRenderTimer) clearTimeout(tutorialRenderTimer);
   var overlay = document.getElementById("tutorial-overlay");
   overlay.innerHTML = "";
 
+  if (tutStep < 0) tutStep = 0;
   if (tutStep >= TUT_STEPS.length) {
     endTutorial();
     return;
   }
 
   var step = TUT_STEPS[tutStep];
-
   if (step.action) runTutAction(step.action);
 
-  setTimeout(function() {
+  tutorialRenderTimer = setTimeout(function() {
     if (!tutorialActive) return;
 
     var targetEl = null;
     if (step.selector) {
-      try { targetEl = document.querySelector(step.selector); } catch(e) {}
+      try { targetEl = document.querySelector(step.selector); } catch (e) {}
     }
     if (!targetEl && step.fallbackSelector) {
-      try { targetEl = document.querySelector(step.fallbackSelector); } catch(e) {}
+      try { targetEl = document.querySelector(step.fallbackSelector); } catch (e) {}
     }
-    if (targetEl && (targetEl.offsetWidth === 0 || targetEl.offsetHeight === 0)) {
-      targetEl = null;
-    }
+    if (targetEl && (targetEl.offsetWidth === 0 || targetEl.offsetHeight === 0)) targetEl = null;
 
     if (targetEl) {
       var rect = targetEl.getBoundingClientRect();
       var spot = document.createElement("div");
       spot.className = "tut-spotlight";
-      spot.style.top = (rect.top - 6) + "px";
-      spot.style.left = (rect.left - 6) + "px";
+      spot.style.top = Math.max(4, rect.top - 6) + "px";
+      spot.style.left = Math.max(4, rect.left - 6) + "px";
       spot.style.width = (rect.width + 12) + "px";
       spot.style.height = (rect.height + 12) + "px";
       overlay.appendChild(spot);
@@ -2468,66 +2548,64 @@ function renderTutStep() {
     var tip = document.createElement("div");
     tip.className = "tut-tooltip";
     tip.innerHTML =
-      '<h4>' + step.title + '</h4>' +
-      '<p>' + step.text + '</p>' +
+      '<h4>' + escapeHTML(step.title) + '</h4>' +
+      '<p>' + escapeHTML(step.text) + '</p>' +
       '<div class="tut-btns">' +
         '<button class="tut-btn skip" onclick="skipTutorial()">تخطي</button>' +
+        '<button class="tut-btn prev" onclick="tutorialPrevious()" ' + (tutStep === 0 ? 'disabled' : '') + '>السابق</button>' +
         '<button class="tut-btn next" onclick="tutorialNext()">' +
           (tutStep === TUT_STEPS.length - 1 ? "إنهاء الجولة" : "التالي") +
         '</button>' +
       '</div>';
     overlay.appendChild(tip);
 
-    setTimeout(function() {
+    tutorialRenderTimer = setTimeout(function() {
+      if (!tutorialActive || !tip.isConnected) return;
       if (!targetEl) {
         tip.style.top = "50%";
         tip.style.left = "50%";
         tip.style.transform = "translate(-50%, -50%)";
         tip.style.opacity = "1";
-      } else {
-        var tRect = targetEl.getBoundingClientRect();
-        var tipH = tip.offsetHeight, tipW = tip.offsetWidth;
-        var vw = window.innerWidth, vh = window.innerHeight;
-        var pos = step.position || "bottom";
-        var topPos;
-
-        var spaceAbove = tRect.top;
-        var spaceBelow = vh - tRect.bottom;
-
-        if (pos === "center") {
-          topPos = (vh - tipH) / 2;
-        } else if (pos === "bottom" && spaceBelow >= tipH + 16) {
-          topPos = tRect.bottom + 12;
-        } else if (pos === "top" && spaceAbove >= tipH + 16) {
-          topPos = tRect.top - tipH - 12;
-        } else {
-          if (spaceBelow >= tipH + 16) {
-            topPos = tRect.bottom + 12;
-          } else if (spaceAbove >= tipH + 16) {
-            topPos = tRect.top - tipH - 12;
-          } else {
-            topPos = (vh - tipH) / 2;
-          }
-        }
-
-        var leftPos = tRect.left + (tRect.width / 2) - (tipW / 2);
-        if (leftPos < 12) leftPos = 12;
-        if (leftPos + tipW > vw - 12) leftPos = vw - tipW - 12;
-
-        tip.style.top = topPos + "px";
-        tip.style.left = leftPos + "px";
-        tip.style.opacity = "1";
+        return;
       }
-    }, 30);
-
-  }, 350);
+      var tRect = targetEl.getBoundingClientRect();
+      var tipH = tip.offsetHeight, tipW = tip.offsetWidth;
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var pos = step.position || "bottom";
+      var spaceAbove = tRect.top, spaceBelow = vh - tRect.bottom;
+      var topPos;
+      if (pos === "center") topPos = (vh - tipH) / 2;
+      else if (pos === "bottom" && spaceBelow >= tipH + 16) topPos = tRect.bottom + 12;
+      else if (pos === "top" && spaceAbove >= tipH + 16) topPos = tRect.top - tipH - 12;
+      else if (spaceBelow >= tipH + 16) topPos = tRect.bottom + 12;
+      else if (spaceAbove >= tipH + 16) topPos = tRect.top - tipH - 12;
+      else topPos = (vh - tipH) / 2;
+      topPos = Math.max(8, Math.min(topPos, vh - tipH - 8));
+      var leftPos = tRect.left + (tRect.width / 2) - (tipW / 2);
+      leftPos = Math.max(8, Math.min(leftPos, vw - tipW - 8));
+      tip.style.top = topPos + "px";
+      tip.style.left = leftPos + "px";
+      tip.style.opacity = "1";
+    }, 35);
+  }, 220);
 }
 
-function tutorialNext() { tutStep++; renderTutStep(); }
+function tutorialNext() {
+  if (!tutorialActive) return;
+  if (tutStep >= TUT_STEPS.length - 1) { endTutorial(); return; }
+  tutStep++;
+  renderTutStep();
+}
+function tutorialPrevious() {
+  if (!tutorialActive || tutStep <= 0) return;
+  tutStep--;
+  renderTutStep();
+}
 function skipTutorial() { endTutorial(); }
 
 function endTutorial() {
   tutorialActive = false;
+  if (tutorialRenderTimer) { clearTimeout(tutorialRenderTimer); tutorialRenderTimer = null; }
   var overlay = document.getElementById("tutorial-overlay");
   overlay.classList.remove("active");
   overlay.innerHTML = "";
@@ -2574,8 +2652,19 @@ function resetDailyTasks() {
   var today = getTodayStr();
   var todayDay = new Date().getDay();
   var changed = false;
+  var startToday = new Date();
+  startToday.setHours(0, 0, 0, 0);
+
   currentTasks.forEach(function(t) {
     if (!t || typeof t !== "object") return;
+
+    var normalizedDays = normalizeTaskDays(t.days);
+    var daysNeedNormalize = !Array.isArray(t.days) || normalizedDays.length !== t.days.length || normalizedDays.some(function(day, index) { return typeof t.days[index] !== "number" || t.days[index] !== day; });
+    if (daysNeedNormalize) {
+      t.days = normalizedDays;
+      changed = true;
+    }
+
     var lastReset = normalizeDateKey(t.lastReset);
     if (t.freq === "once") {
       var createdDay = normalizeDateKey(t.createdAt ? new Date(t.createdAt) : t.lastReset);
@@ -2585,30 +2674,37 @@ function resetDailyTasks() {
       }
       return;
     }
+
     var needsReset = false;
-    if (["daily", "custom"].indexOf(t.freq) !== -1 && lastReset !== today) {
-      needsReset = true;
-    } else if (t.freq === "weekly" && lastReset !== today) {
-      var days = Array.isArray(t.days) ? t.days : [];
-      if (days.length) needsReset = days.indexOf(todayDay) !== -1;
-      else {
-        var lastDate = t.lastReset ? new Date(t.lastReset) : null;
-        var todayDate = new Date();
-        if (lastDate && !isNaN(lastDate.getTime())) {
-          var diffDays = Math.floor((new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()) - new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate())) / 86400000);
-          needsReset = diffDays >= 7;
+    if (t.freq === "daily") {
+      needsReset = lastReset !== today;
+    } else if (t.freq === "custom") {
+      // A custom-day task is reset only when one of its selected days arrives.
+      // Legacy custom tasks with no valid day list fall back to daily reset rather than getting stuck.
+      needsReset = lastReset !== today && (normalizedDays.length === 0 || normalizedDays.indexOf(todayDay) !== -1);
+    } else if (t.freq === "weekly") {
+      if (normalizedDays.length) {
+        needsReset = lastReset !== today && normalizedDays.indexOf(todayDay) !== -1;
+      } else if (lastReset) {
+        var parts = lastReset.split("-").map(Number);
+        if (parts.length === 3 && parts.every(Number.isFinite)) {
+          var lastResetDate = new Date(parts[0], parts[1] - 1, parts[2]);
+          lastResetDate.setHours(0, 0, 0, 0);
+          needsReset = Math.floor((startToday.getTime() - lastResetDate.getTime()) / 86400000) >= 7;
         }
       }
     }
+
     if (needsReset) {
       t.done = false;
       t.current = 0;
       t.completedAt = null;
-      if (Array.isArray(t.optionGroups)) t.optionGroups.forEach(function(g) { g.selected = null; });
+      if (Array.isArray(t.optionGroups)) t.optionGroups.forEach(function(g) { if (g) g.selected = null; });
       t.lastReset = today;
       changed = true;
     }
   });
+
   if (changed) saveTasks();
 }
 
@@ -3063,7 +3159,7 @@ function openAddTask() {
 function openEditTask(id) {
   var t = findTask(id); if (!t) return;
   editingTaskId = id;
-  formState = { freq: t.freq || "once", hasQty: !!t.hasQty, priority: t.priority || "medium", days: t.days ? t.days.slice() : [] };
+  formState = { freq: t.freq || "once", hasQty: !!t.hasQty, priority: t.priority || "medium", days: normalizeTaskDays(t.days) };
   formTimes = t.times ? t.times.slice() : [];
   editorGroups = t.optionGroups ? JSON.parse(JSON.stringify(t.optionGroups)) : [];
   document.getElementById("task-modal-title").textContent = "تعديل المهمة";
@@ -3078,8 +3174,9 @@ function openEditTask(id) {
   var customDaysVisible = (t.freq === "custom" || t.freq === "weekly");
   document.getElementById("custom-days-container").style.display = customDaysVisible ? "block" : "none";
   document.querySelectorAll("#days-chips-list .day-chip").forEach(function(c){
-    c.classList.remove("active");
-    if (formState.days.indexOf(parseInt(c.getAttribute("data-day"))) !== -1) c.classList.add("active");
+    var selected = formState.days.indexOf(parseInt(c.getAttribute("data-day"), 10)) !== -1;
+    c.classList.toggle("active", selected);
+    c.setAttribute("aria-pressed", selected ? "true" : "false");
   });
 
   renderPriorityChips(); renderFreqChips(); renderEditor(); renderTimesEditor();
@@ -3093,12 +3190,33 @@ function renderFreqChips() {
   document.querySelectorAll("#task-freq-chips .chip").forEach(function(c){ c.classList.toggle("active", c.getAttribute("data-freq") === formState.freq); });
   document.getElementById("custom-days-container").style.display = (formState.freq === "custom" || formState.freq === "weekly") ? "block" : "none";
 }
-function setTaskFreq(f) { formState.freq = f; renderFreqChips(); playSound("tap"); }
+function setTaskFreq(f) {
+  formState.freq = f;
+  if (f !== "custom" && f !== "weekly") formState.days = [];
+  document.querySelectorAll("#days-chips-list .day-chip").forEach(function(chip) {
+    var selected = formState.days.indexOf(parseInt(chip.getAttribute("data-day"), 10)) !== -1;
+    chip.classList.toggle("active", selected);
+    chip.setAttribute("aria-pressed", selected ? "true" : "false");
+  });
+  renderFreqChips();
+  playSound("tap");
+}
+function normalizeTaskDays(days) {
+  if (!Array.isArray(days)) return [];
+  return Array.from(new Set(days.map(function(day) { return Number(day); })
+    .filter(function(day) { return Number.isInteger(day) && day >= 0 && day <= 6; }))).sort(function(a, b) { return a - b; });
+}
 function toggleDay(el) {
-  var d = parseInt(el.getAttribute("data-day"));
+  var d = Number(el.getAttribute("data-day"));
+  if (!Number.isInteger(d) || d < 0 || d > 6) return;
+  formState.days = normalizeTaskDays(formState.days);
   var idx = formState.days.indexOf(d);
-  if (idx === -1) { formState.days.push(d); el.classList.add("active"); }
-  else { formState.days.splice(idx, 1); el.classList.remove("active"); }
+  if (idx === -1) formState.days.push(d);
+  else formState.days.splice(idx, 1);
+  formState.days = normalizeTaskDays(formState.days);
+  var selected = formState.days.indexOf(d) !== -1;
+  el.classList.toggle("active", selected);
+  el.setAttribute("aria-pressed", selected ? "true" : "false");
   playSound("tap");
 }
 function toggleQuantity() {
@@ -3149,6 +3267,7 @@ function saveTask() {
     if (g.title.trim() && opts.length > 0) cleanGroups.push({ title: g.title.trim(), options: opts, selected: g.selected || null });
   });
 
+  formState.days = normalizeTaskDays(formState.days);
   if ((formState.freq === "custom" || formState.freq === "weekly") && formState.days.length === 0) {
     alert("اختر يوماً واحداً على الأقل");
     return;
@@ -3157,8 +3276,18 @@ function saveTask() {
   if (editingTaskId !== null) {
     var t = findTask(editingTaskId);
     if (t) {
+      var oldFreq = t.freq || "once";
+      var oldDays = normalizeTaskDays(t.days);
+      var newDays = normalizeTaskDays(formState.days);
+      var scheduleChanged = oldFreq !== formState.freq || oldDays.join(",") !== newDays.join(",");
       t.title = title; t.freq = formState.freq; t.notes = notes; t.hasQty = formState.hasQty; t.times = formTimes.slice();
-      t.priority = formState.priority; t.time = time; t.days = formState.days.slice();
+      t.priority = formState.priority; t.time = time; t.days = newDays;
+      if (scheduleChanged) {
+        t.lastReset = getTodayStr();
+        t.done = false; t.completedAt = null; t.current = 0;
+        if (formState.freq === "once") t.createdAt = Date.now();
+        cleanGroups.forEach(function(g) { g.selected = null; });
+      }
       if (t.hasQty) { t.target = target; t.unit = unit; if (t.current > target) t.current = target; } else { t.target = 0; t.unit = ""; t.current = 0; }
       t.optionGroups = cleanGroups;
       t.archived = false;
@@ -3177,7 +3306,7 @@ function saveTask() {
       priority: formState.priority, order: currentTasks.length,
       hasQty: formState.hasQty, target: target, unit: unit, current: 0, done: false,
       optionGroups: cleanGroups, completedAt: null, lastReset: getTodayStr(), createdAt: Date.now(),
-      days: formState.days.slice(), archived: false, lastRewardDate: ""
+      days: normalizeTaskDays(formState.days), archived: false, lastRewardDate: ""
     });
     saveTasks();
     closeTaskModal(); renderTasks(); playSound("add"); vibrate(15);
@@ -3218,6 +3347,55 @@ function confirmTime() {
 // 21. MODAL CONTROL + DAILY NOTES
 // ==========================================
 function showModal(id) { document.getElementById("overlay").classList.add("show"); document.getElementById(id).classList.add("show"); }
+var usageGuideIndex = 0;
+var USAGE_GUIDE_PAGES = [
+  { title: "ابدأ بخطوة صغيرة كل يوم", body: "<p>مِرْقاة تطبيق عربي لتنظيم المهام ومتابعة الإنجاز. يعمل دون حساب أو كلمة مرور، ويحفظ بياناته داخل المتصفح على الجهاز الحالي.</p><p>في البداية ستجد الفئة الدينية وبداخلها مهام جاهزة. بقية الفئات فارغة لتضيف إليها ما يناسبك.</p>" },
+  { title: "الفئات والأصناف", body: "<p>الفئة هي المجموعة الرئيسية، مثل «دينية» أو «دراسية». الصنف يقسم الفئة إلى مجموعات أصغر؛ مثل «الصلاة» و«صلاة مستحبة» و«الأذكار» و«قراءة القرآن» داخل الفئة الدينية.</p><p>افتح فئة من الصفحة الرئيسية ثم اختر صنفًا. يمكنك إنشاء صنف جديد من داخل الفئة، أو إضافة فئة جديدة من زر «إضافة قائمة جديدة».</p>" },
+  { title: "إضافة مهمة وتعديلها", body: "<p>افتح الصنف المطلوب واضغط زر إضافة مهمة. أدخل اسمًا واضحًا، وحدد الأولوية والتكرار. يمكنك إضافة وقت تذكير وملاحظات، كما يمكنك إنشاء خيارات أو هدف عددي للتقدم.</p><p>لحفظ التغييرات اضغط «حفظ». لتغيير المهمة لاحقًا، استخدم زر التعديل الموجود على بطاقتها. إذا كان الصنف فارغًا فهذه حالة مقصودة؛ أضف إليه مهامك عند الحاجة.</p>" },
+  { title: "التكرار واختيار الأيام", body: "<p>«يومي» يعيد المهمة كل يوم. «أسبوعي» يعيدها في الأيام التي اخترتها، و«أيام محددة» يظهرها في الأيام المحددة فقط. عند استخدام «مرة واحدة» تصبح المهمة مؤقتة لذلك اليوم وتُؤرشف بعده.</p><p>اضغط على اليوم لتحديده، واضغط عليه مرة أخرى لإلغاء تحديده. يجب اختيار يوم واحد على الأقل للتكرار الأسبوعي أو لأيام محددة. راجع الأيام المظللة قبل الحفظ.</p>" },
+  { title: "إنجاز المهام وإعادة ضبطها", body: "<p>اضغط مربع الإنجاز عند إكمال المهمة. المهام اليومية تُعاد إلى غير مكتملة عند بدء يوم جديد. أما المهام الأسبوعية أو ذات الأيام المحددة، فتُعاد عندما يصل أحد أيامها المختارة، وتظل مخفية في الأيام غير المحددة.</p><p>إذا غيّرت جدول تكرار مهمة من نافذة التعديل، يعيد التطبيق حالة إنجازها حتى لا تنتقل علامة الإنجاز إلى جدول جديد بالخطأ.</p>" },
+  { title: "السجل والملاحظات", body: "<p>من «سجل الإنجاز» راجع الأيام السابقة والتقدم المحفوظ. يمكنك فتح يوم في السجل ومراجعة تفاصيل إنجازه، وإضافة ملاحظة لذلك اليوم عند توفر بطاقة الملاحظات.</p><p>يعتمد السجل على البيانات التي حفظها التطبيق في الجهاز؛ فإذا حُذفت بيانات الموقع من المتصفح، فلن يكون السجل متاحًا إلا إذا كان لديك ملف نسخة احتياطية.</p>" },
+  { title: "المسبحة والأوسمة ومؤقت التركيز", body: "<p>المسبحة تحفظ عدد التسبيحات محليًا ويمكن تصفيرها من زر التصفير بعد التأكيد. الأوسمة تعرض الإنجازات التي فتحها المستخدم بحسب شروط التطبيق.</p><p>مؤقت التركيز يساعدك على متابعة جلسة تركيز محددة. ابدأ المؤقت عند بدء الجلسة، وأعد ضبطه قبل جلسة جديدة إذا لزم الأمر.</p>" },
+  { title: "النسخ الاحتياطي والخصوصية", body: "<p>من الإعدادات اختر «تصدير نسخة احتياطية» واحفظ ملف JSON في مكان آمن. للاستعادة، اختر «استيراد نسخة احتياطية» وحدد الملف. الاستيراد يستبدل البيانات الحالية بعد التأكيد، لذا صدّر نسخة من بياناتك الحالية قبل الاستيراد.</p><p>بيانات مِرْقاة محلية لهذا المتصفح والجهاز ولا تنتقل تلقائيًا لجهاز آخر. قد يؤدي مسح بيانات الموقع أو المتصفح إلى فقدانها. لا تشارك ملف النسخة الاحتياطية مع شخص لا تريد أن يطّلع على بياناتك.</p>" },
+  { title: "تثبيت التطبيق", body: "<p>على متصفح يدعم تثبيت تطبيقات الويب، افتح قائمة المتصفح واختر «تثبيت مِرْقاة» أو «إضافة إلى الشاشة الرئيسية». على iPhone افتح الموقع في Safari ثم استخدم زر المشاركة واختر «إضافة إلى الشاشة الرئيسية».</p><p>استخدم الموقع نفسه في كل مرة حتى تبقى بيانات التخزين المحلي ضمن النطاق نفسه. بعد نشر تحديث جديد قد تحتاج إلى إغلاق التطبيق وإعادة فتحه لتحميل النسخة الجديدة.</p>" }
+];
+function renderUsageGuidePage() {
+  var page = USAGE_GUIDE_PAGES[usageGuideIndex];
+  if (!page) { usageGuideIndex = 0; page = USAGE_GUIDE_PAGES[0]; }
+  var pageEl = document.getElementById("usage-guide-page");
+  var topicEl = document.getElementById("usage-guide-topic");
+  var progressEl = document.getElementById("usage-guide-progress");
+  var prev = document.getElementById("usage-guide-prev");
+  var next = document.getElementById("usage-guide-next");
+  if (!pageEl || !topicEl || !progressEl || !prev || !next) return;
+  topicEl.value = String(usageGuideIndex);
+  pageEl.innerHTML = "<article class='guide-page-card' style='background:var(--surface-soft);border:1px solid var(--border);border-radius:14px;padding:16px;min-height:170px;'><h3 style='font-size:17px;margin-bottom:10px;color:var(--primary);'>" + escapeHTML(page.title) + "</h3><div style='font-size:13px;color:var(--text);line-height:1.9;'>" + page.body + "</div></article>";
+  progressEl.textContent = "الموضوع " + (usageGuideIndex + 1) + " من " + USAGE_GUIDE_PAGES.length;
+  prev.disabled = usageGuideIndex === 0;
+  next.textContent = usageGuideIndex === USAGE_GUIDE_PAGES.length - 1 ? "إنهاء الدليل" : "التالي";
+}
+function openUsageGuide() {
+  usageGuideIndex = 0;
+  showModal("usage-guide-modal");
+  renderUsageGuidePage();
+}
+function selectUsageGuideTopic(value) {
+  var index = Number(value);
+  if (!Number.isInteger(index) || index < 0 || index >= USAGE_GUIDE_PAGES.length) return;
+  usageGuideIndex = index;
+  renderUsageGuidePage();
+}
+function usageGuidePrevious() {
+  if (usageGuideIndex <= 0) return;
+  usageGuideIndex--;
+  renderUsageGuidePage();
+}
+function usageGuideNext() {
+  if (usageGuideIndex >= USAGE_GUIDE_PAGES.length - 1) { closeUsageGuide(); return; }
+  usageGuideIndex++;
+  renderUsageGuidePage();
+}
+function closeUsageGuide() { hideModal("usage-guide-modal"); }
 function hideModal(id) {
   document.getElementById(id).classList.remove("show");
   if (document.querySelectorAll(".modal.show").length === 0) document.getElementById("overlay").classList.remove("show");
@@ -3695,12 +3873,7 @@ function renderSettings() {
 
   html += "<div class='settings-group'><div class='settings-item' style='cursor:default'><div class='settings-icon' " + (guest ? "style='background:var(--accent-soft);color:#8a5a2c'" : "") + "><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg></div><div class='settings-label'>" + escapeHTML(displayName) + "</div><div class='settings-value'>" + pts + " نقطة</div></div></div>";
 
-  if (guest) {
-    html += "<div class='settings-group'><button class='settings-item' onclick='showSignupForGuest()'><div class='settings-icon' style='background:var(--accent-soft);color:#8a5a2c'>" + ICONS.cloud + "</div><div class='settings-label' style='font-weight:600;'>إنشاء حساب سحابي</div></button></div>";
-  }
-  if (cloud) {
-    html += "<div class='settings-group'><div class='settings-item' style='cursor:default'><div class='settings-icon'>" + ICONS.cloud + "</div><div class='settings-label' style='font-size:12px;'>المزامنة السحابية مُفعّلة — بياناتك تُحدّث تلقائياً</div></div></div>";
-  }
+  html += "<div class='settings-group'><div class='settings-item' style='cursor:default'><div class='settings-icon'>" + ICONS.backup + "</div><div class='settings-label' style='font-size:12px;'>وضع محلي — بياناتك محفوظة على هذا الجهاز فقط</div></div></div>";
 
   html += "<div class='settings-group'>" +
     "<button class='settings-item' onclick='exportData()'>" +
@@ -3724,6 +3897,14 @@ function renderSettings() {
   "</div>";
 
   html += "<div class='settings-group'>" +
+    "<button class='settings-item' onclick='openUsageGuide()'>" +
+      "<div class='settings-icon'>" + ICONS.info + "</div>" +
+      "<div class='settings-label'>دليل الاستخدام</div>" +
+      "<div class='settings-value'>اقرأ</div>" +
+    "</button>" +
+  "</div>";
+
+  html += "<div class='settings-group'>" +
     "<button class='settings-item' onclick='restartTutorial()'>" +
       "<div class='settings-icon'>" + ICONS.info + "</div>" +
       "<div class='settings-label'>إعادة عرض الدليل التعريفي</div>" +
@@ -3740,7 +3921,6 @@ function renderSettings() {
     "<div class='settings-item' onclick='requestNotifPerm()'><div class='settings-icon'>" + ICONS.bell + "</div><div class='settings-label'>التنبيهات</div><button class='switch " + (notifOn ? "on" : "") + "' type='button'></button></div>" +
   "</div>";
 
-  html += "<div class='settings-group'><button class='settings-item' onclick='logout()'><div class='settings-icon accent'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/><polyline points='16 17 21 12 16 7'/><line x1='21' y1='12' x2='9' y2='12'/></svg></div><div class='settings-label'>" + (guest ? "إنهاء الجلسة" : "تسجيل الخروج") + "</div></button></div>";
   container.innerHTML = html;
 }
 
@@ -3773,7 +3953,14 @@ function buildToggle(k, l, v, icon) {
   var iconHtml = icon || "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='10'/><path d='M12 8v4l3 2'/></svg>";
   return "<div class='settings-item' onclick='toggleSetting(\"" + k + "\")'><div class='settings-icon'>" + iconHtml + "</div><div class='settings-label'>" + l + "</div><button class='switch " + (v ? "on" : "") + "' type='button'></button></div>";
 }
-function toggleSetting(k) { var s = loadSettings(); s[k] = !s[k]; saveSettings(s); playSound("tap"); renderSettings(); }
+function toggleSetting(k) {
+  var s = loadSettings();
+  s[k] = !s[k];
+  if (k === "darkMode") s.themePreferenceSet = true;
+  saveSettings(s);
+  playSound("tap");
+  renderSettings();
+}
 
 var notifiedTasks = new Set();
 function parseReminderTime(value) {

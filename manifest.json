@@ -1,34 +1,27 @@
 {
-  "name": "مِرْقاة — نظّم إنجازك",
+  "id": "./",
+  "name": "مِرْقاة",
   "short_name": "مِرْقاة",
-  "description": "تطبيق تنظيم المهام اليومية ومتابعة الإنجاز",
+  "description": "تطبيق عربي محلي لتنظيم المهام، مع دليل استخدام تفاعلي ونسخ احتياطي، دون حساب أو كلمة مرور.",
+  "lang": "ar",
+  "dir": "rtl",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#ebe4d5",
-  "theme_color": "#5a8b78",
-  "lang": "ar",
-  "dir": "rtl",
+  "background_color": "#121417",
+  "theme_color": "#121417",
   "icons": [
-    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
-    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ],
-  "shortcuts": [
     {
-      "name": "إضافة مهمة جديدة",
-      "short_name": "إضافة مهمة",
-      "description": "فتح شاشة إضافة مهمة مباشرة",
-      "url": "./?action=add",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "name": "المسبحة الإلكترونية",
-      "short_name": "المسبحة",
-      "description": "فتح شاشة المسبحة مباشرة",
-      "url": "./?action=tasbih",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
