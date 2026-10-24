@@ -699,6 +699,26 @@ html.dark-mode .dhikr-footer span { background: rgba(103,214,160,.08); }
     <div class="content" id="settings-content"></div>
   </div>
 
+  <div class="modal" id="display-name-modal" style="z-index:130;">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2>تغيير الاسم الظاهر</h2>
+      <button class="modal-close" type="button" onclick="hideModal('display-name-modal')" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label class="form-label" for="display-name-input">الاسم الذي سيظهر في الصفحة الرئيسية</label>
+        <input class="form-input" id="display-name-input" type="text" maxlength="30" autocomplete="nickname" placeholder="اكتب اسمك" aria-describedby="display-name-error" onkeydown="if(event.key==='Enter'){event.preventDefault();saveDisplayName();}">
+        <div id="display-name-error" role="alert" style="display:none;color:var(--danger);font-size:12px;margin-top:7px;"></div>
+        <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-top:8px;">هذا اسم للعرض فقط، ولا يغيّر بيانات مهامك أو إعداداتك.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" type="button" onclick="hideModal('display-name-modal')">إلغاء</button>
+      <button class="btn btn-save" type="button" onclick="saveDisplayName()">حفظ الاسم</button>
+    </div>
+  </div>
+
   <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
 
   <div class="modal" id="day-note-modal">
@@ -1818,8 +1838,8 @@ function enterApp() {
       info.localOnly = true;
       if (!info.displayName) info.displayName = "هذا الجهاز";
       users[u] = info; saveUsers(users);
-      displayName = "هذا الجهاز";
-      avatarLetter = "م";
+      displayName = String(loadUserData("displayName", info.displayName) || info.displayName || "هذا الجهاز").trim() || "هذا الجهاز";
+      avatarLetter = Array.from(displayName)[0] || "م";
       isG = false;
     }
 
@@ -2164,7 +2184,8 @@ function exportData() {
     lastStreakDate: loadUserData("lastStreakDate", ""),
     prayersAdded: loadUserData("prayersAdded", false),
     lastOpen: getUserMeta("lastOpen") || "",
-    defaultsInjected_v2: loadUserData("defaultsInjected_v2", false)
+    defaultsInjected_v2: loadUserData("defaultsInjected_v2", false),
+    displayName: getDisplayName()
   };
   
   var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -2303,6 +2324,7 @@ function validateBackupData(data) {
   data.lastOpen = typeof data.lastOpen === "string" ? data.lastOpen : "";
   data.prayersAdded = !!data.prayersAdded;
   data.defaultsInjected_v2 = !!data.defaultsInjected_v2;
+  data.displayName = typeof data.displayName === "string" ? data.displayName.trim().replace(/\s+/g, " ").slice(0, 30) : "";
   return data;
 }
 
@@ -2331,6 +2353,7 @@ function handleImportFile(ev) {
       saveUserData("lastStreakDate", data.lastStreakDate);
       saveUserData("prayersAdded", data.prayersAdded);
       saveUserData("defaultsInjected_v2", data.defaultsInjected_v2);
+      if (data.displayName) { try { setDisplayNameValue(data.displayName); } catch (nameError) { console.warn("Imported display name was not applied", nameError); } }
       setUserMeta("lastOpen", data.lastOpen || getTodayStr());
       if (CLOUD_ENABLED && cloudUser) {
         var importUid = cloudUser.uid;
@@ -3837,6 +3860,81 @@ function formatTime(ts) {
 // ==========================================
 // 24. SETTINGS & NOTIFICATIONS & BADGES UI
 // ==========================================
+function getDeviceProfile() {
+  var current = SafeStorage.getItem("mrq_currentUser") || "guest_device";
+  if (!SafeStorage.getItem("mrq_currentUser")) setCurrentUser(current);
+  var users = getUsers();
+  var info = users[current];
+  if (!info || typeof info !== "object") info = { displayName: "هذا الجهاز", isGuest: true, localOnly: true, createdAt: Date.now() };
+  if (!info.displayName) info.displayName = "هذا الجهاز";
+  info.localOnly = true;
+  users[current] = info;
+  saveUsers(users);
+  return { id: current, users: users, info: info };
+}
+
+function getDisplayName() {
+  if (CLOUD_ENABLED && cloudUser) return String(cloudData.displayName || "مستخدم").trim() || "مستخدم";
+  var profile = getDeviceProfile();
+  var saved = loadUserData("displayName", "");
+  return String(saved || profile.info.displayName || "هذا الجهاز").trim() || "هذا الجهاز";
+}
+
+function setDisplayNameValue(value) {
+  var name = String(value || "").trim().replace(/\s+/g, " ");
+  if (!name || Array.from(name).length > 30) throw new Error("اكتب اسمًا من حرف واحد إلى 30 حرفًا.");
+  if (CLOUD_ENABLED && cloudUser) {
+    cloudData.displayName = name;
+    scheduleCloudSave();
+  } else {
+    var profile = getDeviceProfile();
+    profile.info.displayName = name;
+    profile.info.localOnly = true;
+    profile.users[profile.id] = profile.info;
+    saveUsers(profile.users);
+    saveUserData("displayName", name);
+  }
+  return name;
+}
+
+function openDisplayNameModal() {
+  var input = document.getElementById("display-name-input");
+  var error = document.getElementById("display-name-error");
+  if (!input) return;
+  input.value = getDisplayName();
+  if (error) { error.textContent = ""; error.style.display = "none"; }
+  showModal("display-name-modal");
+  setTimeout(function() { input.focus(); input.select(); }, 320);
+}
+
+function saveDisplayName() {
+  var input = document.getElementById("display-name-input");
+  var error = document.getElementById("display-name-error");
+  var raw = input ? input.value : "";
+  var name = String(raw || "").trim().replace(/\s+/g, " ");
+  if (!name || Array.from(name).length > 30) {
+    if (error) {
+      error.textContent = "اكتب اسمًا من حرف واحد إلى 30 حرفًا.";
+      error.style.display = "block";
+    }
+    if (input) input.focus();
+    return false;
+  }
+  try {
+    name = setDisplayNameValue(name);
+  } catch (e) {
+    if (error) { error.textContent = e.message || "تعذّر حفظ الاسم."; error.style.display = "block"; }
+    return false;
+  }
+  var homeName = document.getElementById("home-username");
+  if (homeName) homeName.textContent = name;
+  var avatar = document.getElementById("home-avatar");
+  if (avatar) avatar.textContent = Array.from(name)[0] || "م";
+  hideModal("display-name-modal");
+  renderSettings();
+  return true;
+}
+
 function renderSettings() {
   var container = document.getElementById("settings-content");
   var displayName = "مستخدم";
@@ -3844,9 +3942,7 @@ function renderSettings() {
   var cloud = isCloudUser();
   if (cloud) displayName = cloudData.displayName || (cloudUser && cloudUser.email.split("@")[0]) || "مستخدم";
   else {
-    var u = SafeStorage.getItem("mrq_currentUser");
-    var users = getUsers(); var info = users[u] || {};
-    displayName = info.displayName || u || "مستخدم";
+    displayName = getDisplayName();
   }
   var s = loadSettings();
   var html = "";
@@ -3871,7 +3967,13 @@ function renderSettings() {
     "</button>" +
   "</div>";
 
-  html += "<div class='settings-group'><div class='settings-item' style='cursor:default'><div class='settings-icon' " + (guest ? "style='background:var(--accent-soft);color:#8a5a2c'" : "") + "><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg></div><div class='settings-label'>" + escapeHTML(displayName) + "</div><div class='settings-value'>" + pts + " نقطة</div></div></div>";
+  html += "<div class='settings-group'>" +
+    "<button class='settings-item' type='button' onclick='openDisplayNameModal()' aria-label='تغيير الاسم الظاهر'>" +
+      "<div class='settings-icon'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg></div>" +
+      "<div class='settings-label'>الاسم الظاهر: " + escapeHTML(displayName) + "</div><div class='settings-value'>تغيير ✎</div>" +
+    "</button>" +
+    "<div class='settings-item' style='cursor:default'><div class='settings-icon accent'>" + ICONS.trophy + "</div><div class='settings-label'>النقاط الحالية</div><div class='settings-value'>" + pts + " نقطة</div></div>" +
+  "</div>";
 
   html += "<div class='settings-group'><div class='settings-item' style='cursor:default'><div class='settings-icon'>" + ICONS.backup + "</div><div class='settings-label' style='font-size:12px;'>وضع محلي — بياناتك محفوظة على هذا الجهاز فقط</div></div></div>";
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mirqat-local-dark-guide-v5';
+const CACHE_NAME = 'mirqat-local-dark-guide-v6-name';
 const APP_SHELL = ['./', './index.html', './mirqat_fixed.html', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
